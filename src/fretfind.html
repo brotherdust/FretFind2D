@@ -19,6 +19,8 @@
     
 -->
 <title>FretFind2D</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="keywords" lang="en" content="FretFind, stringed instrument, luthier, fret, guitar, fret placement calculator" />
 <meta name="description" lang="en" content="FretFind2d models fretboards as a system of line segments on a two dimensional plane to design freboards with multiple scale lenghts and microtonal scales." />
 <link rel="stylesheet" type="text/css" href="fretfind.css" />
@@ -338,7 +340,26 @@ $(document).ready(function() {
     ff.setTuning('tuning', 'numStrings', onChange);
     setLengths('ilengths','numStrings', onChange);
     setGauges('igauges', 'numStrings', onChange);
-    paper = Raphael('diagram',200,800);
+    
+    // Initialize Raphael with responsive dimensions
+    var diagramWidth = $('#diagram').width();
+    var diagramHeight = Math.max(500, window.innerHeight * 0.6);
+    $('#diagram').css('height', diagramHeight + 'px');
+    paper = Raphael('diagram', diagramWidth, diagramHeight);
+    
+    // Handle window resize
+    $(window).resize(function() {
+        // Debounce the resize event
+        clearTimeout(window.resizeTimer);
+        window.resizeTimer = setTimeout(function() {
+            // Update diagram height on resize
+            var diagramHeight = Math.max(500, window.innerHeight * 0.6);
+            $('#diagram').css('height', diagramHeight + 'px');
+            // Redraw the guitar
+            onChange();
+        }, 250);
+    });
+    
     updateFormFromHash();
     processChanges = true;
     onChange();
@@ -795,7 +816,6 @@ Fret  P.D.    Fret  P.D.
     <div id="tables"><!-- --></div>
 </div>
 <p class="dev">The latest version in development is available on <a href="https://acspike.github.io/FretFind2D/src/fretfind.html">GitHub</a>.</p>
-<a href="http://github.com/acspike/FretFind2D"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<a href="http://github.com/acspike/FretFind2D"><img class="github-ribbon" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
 </body>
 </html>
-

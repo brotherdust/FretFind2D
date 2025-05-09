@@ -569,10 +569,27 @@ var ff = (function(){
         // calculate scale
         var gw = getExtents(guitar).width;
         var gh = getExtents(guitar).height;
-        var pw = parseInt(paper.canvas.style.width) || paper.width;
-        var ph = parseInt(paper.canvas.style.height) || paper.height;
-        var scale = Math.min(pw/gw,ph/gh);
-        all.scale(scale,scale,0,0);
+        
+        // Get the current container width
+        var containerWidth = $('#diagram').width();
+        var containerHeight = $('#diagram').height();
+        
+        // Set paper dimensions to match container
+        paper.setSize(containerWidth, containerHeight);
+        
+        var pw = containerWidth;
+        var ph = containerHeight;
+        
+        var scale = Math.min(pw/gw, ph/gh) * 0.9; // 0.9 to add some margin
+        all.scale(scale, scale, 0, 0);
+        
+        // Center the drawing in the available space
+        var scaledWidth = gw * scale;
+        var scaledHeight = gh * scale;
+        var translateX = (pw - scaledWidth) / 2;
+        var translateY = (ph - scaledHeight) / 2;
+        
+        all.translate(translateX, translateY);
     };
     
     var getExtents = function(guitar) {

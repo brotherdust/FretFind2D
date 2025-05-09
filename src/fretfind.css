@@ -1,64 +1,264 @@
+/* FretFind2D - Modernized Responsive CSS */
+
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2c3e50;
+  --accent-color: #e74c3c;
+  --light-gray: #f5f5f5;
+  --medium-gray: #e0e0e0;
+  --dark-gray: #333;
+  --border-radius: 4px;
+  --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-    background-color:white;
-    font-family: Arial,sans-serif;
+  background-color: white;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--dark-gray);
+  margin: 0;
+  padding: 20px;
+  max-width: 100%;
+  overflow-x: hidden;
 }
-td {
-    vertical-align: top;
-    }
+
+h1 {
+  color: var(--secondary-color);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+p {
+  margin-bottom: 1.5rem;
+}
+
+/* Main container */
+#fretfind {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Worksheet section */
 #worksheet {
-    float: left;
-    width: 400px;
+  flex: 1;
+  min-width: 300px;
+  max-width: 100%;
+  margin: 0;
+  padding: 15px;
+  background-color: var(--light-gray);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
+
+/* Diagram section */
 #diagram {
-    float: left;
+  flex: 1;
+  min-width: 300px;
+  max-height: 800px;
+  background-color: white;
+  border: 1px solid var(--medium-gray);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
+
+/* Downloads section */
 #downloads {
-	float: left;
+  flex: 1 0 100%;
+  padding: 15px;
+  background-color: var(--light-gray);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-top: 20px;
 }
+
+/* Tables section */
 #tables {
-    float: left;
+  flex: 1 0 100%;
+  overflow-x: auto;
+  margin-top: 20px;
 }
-p.dev {
-    clear: both;
-    padding: 1em;
+
+/* Form elements */
+dt, dd {
+  margin: 8px 0;
 }
-dt,dd {
-    margin:5px;
+
+dt {
+  font-weight: bold;
+  color: var(--secondary-color);
 }
+
+input, textarea, select, button {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid var(--medium-gray);
+  border-radius: var(--border-radius);
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+input[type="radio"], 
+input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  padding: 10px 15px;
+}
+
+button:hover {
+  background-color: var(--secondary-color);
+}
+
+/* Alternative options */
 dl.alternative > dd {
-    display: none;
-	border-left: 2px solid #aaa;
+  display: none;
+  border-left: 2px solid var(--primary-color);
+  padding-left: 10px;
+  margin-left: 10px;
 }
+
 dl.alternative > dt {
-    display: inline;
-    font-size: 0.8em;
+  display: inline-block;
+  font-size: 0.9rem;
+  padding: 5px 10px;
+  margin-right: 5px;
+  background-color: var(--medium-gray);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
+
+dl.alternative > dt:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
 .selected-alt {
-    text-decoration: underline;
+  background-color: var(--primary-color) !important;
+  color: white;
+  font-weight: bold;
 }
+
+/* Help sections */
 dd.help {
-    display: none;
-    font-size: 0.8em;
-    border: 2px dashed red;
-    padding: 10px;
+  display: none;
+  font-size: 0.9rem;
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius);
+  padding: 15px;
+  margin-top: 10px;
+  background-color: rgba(231, 76, 60, 0.05);
 }
-table.foundfrets {
-	border-collapse: collapse;
-}
-table.foundfrets td {
-	border:1px solid black;padding: 0px 5px 0px 5px;
-}
+
 .help dt {
-    font-weight: bold;
+  font-weight: bold;
+  margin-top: 10px;
 }
+
 .help dd {
-    padding-left: 10px;
+  padding-left: 15px;
 }
-input {
-    width: 100px;
+
+/* Tables */
+table.foundfrets {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 15px 0;
 }
+
+table.foundfrets td {
+  border: 1px solid var(--medium-gray);
+  padding: 8px;
+  text-align: left;
+}
+
+table.foundfrets tr:nth-child(even) {
+  background-color: var(--light-gray);
+}
+
+table.foundfrets tr:first-child td {
+  background-color: var(--secondary-color);
+  color: white;
+  font-weight: bold;
+}
+
+/* Experimental tag */
 .experimental {
-  color: red;
+  color: var(--accent-color);
   font-weight: bold;
   text-transform: uppercase;
+  padding: 5px;
+  border: 1px dashed var(--accent-color);
+  display: inline-block;
+  margin: 10px 0;
+}
+
+/* Footer */
+p.dev {
+  clear: both;
+  padding: 1em;
+  text-align: center;
+  margin-top: 30px;
+  border-top: 1px solid var(--medium-gray);
+}
+
+/* GitHub ribbon */
+.github-ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #fretfind {
+    flex-direction: column;
+  }
+  
+  #worksheet, #diagram {
+    min-width: 100%;
+  }
+  
+  dl.alternative > dt {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input, textarea, select {
+    font-size: 16px; /* Prevents zoom on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  #downloads dt, #downloads dd {
+    display: block;
+    width: 100%;
+  }
+  
+  table.foundfrets {
+    font-size: 0.8rem;
+  }
 }
