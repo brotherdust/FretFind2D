@@ -24,7 +24,9 @@
 <meta name="keywords" lang="en" content="FretFind, stringed instrument, luthier, fret, guitar, fret placement calculator" />
 <meta name="description" lang="en" content="FretFind2d models fretboards as a system of line segments on a two dimensional plane to design freboards with multiple scale lenghts and microtonal scales." />
 <link rel="stylesheet" type="text/css" href="fretfind.css" />
-<script type="text/javascript" src="libs/jquery-1.4.2.min.js"><!-- --></script>
+<script type="text/javascript" src="libs/jquery-3.7.1.min.js"><!-- --></script>
+<script type="text/javascript" src="libs/jquery-migrate-3.4.1.min.js"><!-- --></script>
+<script type="text/javascript" src="libs/jquery-browser-fix.js"><!-- --></script>
 <script type="text/javascript" src="libs/jquery.ba-bbq.min.js"><!-- --></script>
 <script type="text/javascript" src="libs/raphael-min.js"><!-- --></script>
 <script type="text/javascript" src="libs/FileSaver.min.js"><!-- --></script>
@@ -90,11 +92,11 @@ var computeOffsets = function(strings, gauges, actual_length, perp_width, spacin
 // get the user-selected display options for on-screen display and all output options (i.e. SVG, PDF).
 var getDisplayOptions = function() {
 
-    var showStrings = $("#showStrings").attr("checked");
-    var showFretboardEdges = $("#showFretboardEdges").attr("checked");
-    var showMetas = $("#showMetas").attr("checked");
-    var showBoundingBox = $("#showBoundingBox").attr("checked");
-    var extendFrets = $("#extendFrets").attr("checked");
+    var showStrings = $("#showStrings").prop("checked");
+    var showFretboardEdges = $("#showFretboardEdges").prop("checked");
+    var showMetas = $("#showMetas").prop("checked");
+    var showBoundingBox = $("#showBoundingBox").prop("checked");
+    var extendFrets = $("#extendFrets").prop("checked");
 
     return {
         showStrings: showStrings,
