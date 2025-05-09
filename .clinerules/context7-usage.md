@@ -25,3 +25,14 @@ These guidelines define how to effectively use the Context7 MCP tool for retriev
 - After retrieving documentation, extract the most relevant information for the current task
 - When implementing changes based on documentation, cite the specific part of the documentation that informed the change
 - For complex migrations or upgrades, create a checklist based on the documentation to track progress
+
+## Context7 workflow
+- Add "use context7" to queries for automatically including current, accurate package documentation
+- Start library searches with `resolve-library-id` to find the correct library ID
+- Follow with `get-library-docs` to retrieve specific documentation
+- Include topic parameter to focus on specific aspects of a library
+- Document all library IDs in library.md after resolution with:
+  - Library ID
+  - Description
+  - Purpose in the project
+  - Date last searched

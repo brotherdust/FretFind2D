@@ -36,6 +36,8 @@ FretFind2D is a fully functional application that successfully fulfills its core
 - ✅ Git MCP server integration for version control operations
 - ✅ Context7 MCP server for accessing up-to-date library documentation
 - ✅ Sequential Thinking MCP server for structured problem-solving
+- ✅ Updated custom commands for MCP tools usage
+- ✅ Standardized workflow for library documentation retrieval
 
 ### Known Issues
 

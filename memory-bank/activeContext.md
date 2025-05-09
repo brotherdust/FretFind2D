@@ -147,6 +147,8 @@ The Sequential Thinking tool should be used frequently for complex problems. It 
 - Always check file status with git_status before committing
 - Use git_diff to review changes before committing
 - Create feature branches with git_create_branch for new development work
+- Include issue references in commit messages when applicable using (#123) format
+- Keep commit message subjects concise (50 characters maximum)
 - Example workflow:
   1. `git_status` to check current state
   2. `git_add` to stage changes
@@ -158,6 +160,13 @@ The Sequential Thinking tool should be used frequently for complex problems. It 
 - Start library searches with `resolve-library-id` to find the correct library ID
 - Follow with `get-library-docs` to retrieve specific documentation
 - Include topic parameter to focus on specific aspects of a library
+- Document all library IDs in library.md after resolution with:
+  - Library ID
+  - Description
+  - Purpose in the project
+  - Date last searched
+- Keep token usage between 2,000-10,000 based on topic complexity
+- Check library.md before using resolve-library-id to avoid duplicate searches
 
 ## Project Insights
 
