@@ -17,6 +17,9 @@ If you use the Chrome browser, I would recommend the [Web Server for Chrome exte
 As of May 2025, this app is now under active development.
 
 The roadmap below is not exhaustive, just stuff I can think of right now that I want to fix, change or add. It's subject to change.
+
+See 'memory-bank/progress.md' for more detail
+
 ## Short Term
 
 - [x] Implement AI-assisted coding to speed development
