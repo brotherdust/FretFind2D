@@ -20,24 +20,41 @@ The roadmap below is not exhaustive, just stuff I can think of right now that I 
 
 See 'memory-bank/progress.md' for more detail
 
-## Short Term
+## Short Term: Technical Debt & Core UX Improvements
+Based on "Next Development Priorities" in `memory-bank/progress.md`.
 
-- [x] Implement AI-assisted coding to speed development
-- [x] Migrate to latest jQuery
-- [ ] Migrate from Raphael (no longer maintained) to SVG.js
-- [ ] Migrate other dependencies
-- [ ] Optimize UI/UX (more detail on this later)
+- [x] Implement AI-assisted coding to speed development (Completed)
+- [ ] **Technical Modernization:**
+    - [ ] Migrate core dependencies:
+        - [ ] Migrate from Raphael.js (no longer maintained) to a modern SVG library (e.g., SVG.js)
+        - [ ] Update jQuery to the latest version (currently on 1.4.2, needs update)
+        - [ ] Update other outdated dependencies
+    - [ ] Refactor code to use modern JavaScript patterns
+- [ ] **User Experience (UI/UX) Enhancements:**
+    - [ ] Modernize the user interface and implement responsive design for better mobile/tablet usability
+    - [ ] Improve overall visual appeal and ease of understanding for the fretboard visualization
+    - [ ] Streamline parameter input, especially for common use cases
+    - [ ] Support fractional inches for input and output
+    - [ ] Implement a precision setting to control the number of decimal places in measurements
+    - [ ] Make data tables more usable (e.g., initially hidden, searchable, sortable)
+- [ ] Add a library of preset designs for popular instrument types
 
-    - [ ] Make the visualization prettier and easier to understand
-    - [ ] Support fractional inches input and output
-    - [ ] Implement precision setting to reduce length of measurement numbers)
-    - [ ] Implement more usable tables: they shouldn't be visible by default, and should be searchable
+## Medium Term: Feature Enhancements & Stability
+Further items from "Potential Enhancements" and "Next Development Priorities" in `memory-bank/progress.md`.
 
-## Long Term
+- [ ] Finalize and stabilize the "individual string scaling" feature (currently experimental)
+- [ ] Implement undo/redo functionality for design changes
+- [ ] Add more comprehensive parameter validation
+- [ ] Explore additional temperament and scale options
+- [ ] Implement a basic sound preview feature based on design parameters
+- [ ] Consider additional visualization options (e.g., simplified 3D view, instrument body preview)
+
+## Long Term: Advanced Functionality & Project Evolution
+Ambitious features for future consideration.
 
 - [ ] Implement a generic string tension calculator
-- [ ] Rename project to something that more accurately reflects new functions
-- [ ] Implement vendor-specific string tension libraries pulling from publicly available datasheets
-- [ ] Implement offline tooling to normalize and ingest vendor data
+- [ ] Develop vendor-specific string tension libraries (potentially pulling from public datasheets)
+- [ ] Create offline tooling to normalize and ingest string vendor data
 - [ ] Implement vendor-aware string tension modeling
-- [ ] Implement best-fit solver to make recommendations of string gauges, given a target per-string tension or feel
+- [ ] Build a "best-fit" solver to recommend string gauges based on target tension or feel
+- [ ] Evaluate renaming the project if functionality significantly expands beyond fretboard design
