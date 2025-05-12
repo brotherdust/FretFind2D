@@ -42,6 +42,13 @@ var ff = {
     strip: function(str) {
         if (typeof str !== 'string') return ''; // Handle non-string inputs
         return str.replace(/^\s+|\s+$/g, '');
+    },
+
+    getInt: function(id) {
+        const element = document.getElementById(id);
+        // parseInt will return NaN if element.value is not a number, or if element is null.
+        // Added radix 10 for clarity and to prevent octal interpretation for strings starting with '0'
+        return element ? parseInt(element.value, 10) : NaN;
     }
 };
 
