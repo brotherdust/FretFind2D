@@ -1057,13 +1057,18 @@ var ff = (function(){
         return null;
     };
     var getStr = function(id) {
-        return document.getElementById(id).value;
+        const element = document.getElementById(id);
+        return element ? element.value : ""; // Return empty string if element not found
     };
     var getFlt = function(id) {
-        return parseFloat(document.getElementById(id).value);
+        const element = document.getElementById(id);
+        // parseFloat will return NaN if element.value is not a number, or if element is null.
+        return element ? parseFloat(element.value) : NaN; 
     };
     var getInt = function(id) {
-        return parseInt(document.getElementById(id).value);
+        const element = document.getElementById(id);
+        // parseInt will return NaN if element.value is not a number, or if element is null.
+        return element ? parseInt(document.getElementById(id).value, 10) : NaN; // Added radix 10
     };
     var getTuning = function(id) {
         var tunings = [];

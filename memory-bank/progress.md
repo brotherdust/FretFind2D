@@ -59,7 +59,7 @@ FretFind2D is a fully functional application that successfully fulfills its core
 3. **Technical Limitations**:
    - Large, complex designs may impact performance
    - Some calculations can be processor-intensive
-   - jQuery dependency is an older version (1.4.2)
+   - jQuery dependency was removed (5/11/2025); some specific UI interactions (e.g., radio buttons, text input behavior with automated browser testing tools) require manual verification post-refactor.
 
 4. **Design Constraints**:
    - "Individual" string scaling is still marked as experimental
@@ -73,11 +73,11 @@ This section outlines planned enhancements and future development directions, al
 ### Short Term Goals: Technical Debt & Core UX Improvements
 - [x] Implement AI-assisted coding to speed development (Completed)
 - [ ] **Technical Modernization:**
-    - [x] Migrate core dependencies: (SVG.js and jQuery updated 5/11/2025)
+    - [x] Migrate core dependencies: (SVG.js updated 5/11/2025, jQuery removed 5/11/2025)
         - [x] Migrate from Raphael.js (no longer maintained) to a modern SVG library (SVG.js 3.2.0) (Completed 5/11/2025)
-        - [x] Update jQuery to the latest version (3.7.1) (Completed 5/11/2025, previously 1.4.2)
+        - [x] Remove jQuery dependency entirely (Completed 5/11/2025, previously 3.7.1)
         - [ ] Update other outdated dependencies
-    - [ ] Refactor code to use modern JavaScript patterns
+    - [x] Refactor code to use modern JavaScript patterns (jQuery related parts completed 5/11/2025)
 - [ ] **User Experience (UI/UX) Enhancements:**
     - [ ] Modernize the user interface and implement responsive design for better mobile/tablet usability
     - [ ] Improve overall visual appeal and ease of understanding for the fretboard visualization
@@ -118,7 +118,7 @@ This section outlines planned enhancements and future development directions, al
 
 ### Technical Choices
 - **SVG.js for Visualization**: Replaced Raphael.js (5/11/2025) for vector graphics, offering modern features. (Previously Raphael.js)
-- **jQuery**: Updated to modern version (3.7.1) for improved compatibility and features (as of 5/11/2025, previously 1.4.2).
+- **jQuery**: Removed entirely and replaced with vanilla JavaScript (as of 5/11/2025). Previously jQuery 3.7.1.
 - **Output Format Diversity**: The decision to support multiple output formats has successfully served diverse user needs.
 
 ### User Experience Decisions
@@ -135,8 +135,8 @@ This section outlines planned enhancements and future development directions, al
 
 Should development continue, these are the top recommended priorities, focusing on immediate impact and foundational improvements (derived from Short Term Goals):
 
-1.  **Migrate Core Dependencies**: Address technical debt by updating Raphael.js, jQuery, and other outdated libraries.
+1.  **Migrate Core Dependencies**: Address technical debt by reviewing/updating remaining outdated libraries (Raphael.js replaced, jQuery removed).
 2.  **Modernize UI & Implement Responsive Design**: Improve the user interface for current standards and ensure usability across devices.
-3.  **Refactor Code to Modern JavaScript Patterns**: Enhance code maintainability and performance.
+3.  **Refactor Code to Modern JavaScript Patterns**: Continue enhancing code maintainability and performance (jQuery-related refactoring complete).
 4.  **Improve Fretboard Visualization**: Make the visual output more appealing and easier to understand.
 5.  **Support Fractional Inches**: Add support for fractional inch measurements for input and output, a key UX improvement for many users.

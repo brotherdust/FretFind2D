@@ -16,13 +16,14 @@ Based on the repository observation, the project has:
 - Been made available as a GitHub Pages deployment for online usage
 - Received Docker configuration for easier local development
 - Maintained backward compatibility with existing designs
+- **jQuery and related plugins (Migrate, BBQ, browser-fix) were removed and code refactored to use vanilla JavaScript (May 2025).**
 
 ## Active Decisions and Considerations
 
 ### Technical Direction
 - Maintaining the pure client-side approach with no server dependencies
-- Ensuring cross-browser compatibility while supporting modern APIs
-- Preserving URL parameter-based design sharing
+- Ensuring cross-browser compatibility while supporting modern APIs (DOM manipulation and event handling now use vanilla JavaScript).
+- Preserving URL parameter-based design sharing (URL parsing refactored to vanilla JavaScript).
 - Supporting various export formats to meet different user needs
 
 ### User Experience Focus
@@ -45,7 +46,7 @@ Potential next steps for the project could include:
 
 ### Potential Enhancements
 - Modernizing the UI for a more contemporary look and feel
-- Updating third-party libraries to newer versions (e.g., jQuery)
+- Reviewing and updating remaining third-party libraries to newer versions (jQuery removed).
 - Improving mobile responsiveness for better access on tablets/phones
 - Adding more export formats or improving existing ones
 - Enhancing visualization with more realistic rendering options
@@ -182,7 +183,7 @@ The Sequential Thinking tool should be used frequently for complex problems. It 
 
 ### Known Challenges
 - Complex UI with many parameters that may overwhelm beginners
-- Older codebase using jQuery rather than modern frameworks
+- Codebase refactored from jQuery to vanilla JavaScript; thorough manual testing of all UI interactions (especially radio buttons and text input behavior) is pending.
 - Limited visual guidance for novice luthiers on practical implementation
 - Some experimental features (like individual string scaling) still marked as experimental
 
@@ -191,3 +192,4 @@ The Sequential Thinking tool should be used frequently for complex problems. It 
 - Successful implementation of client-side file generation
 - Practical application of musical theory in software
 - Balance between powerful features and user-friendly interface
+- Successful refactoring of jQuery-dependent DOM manipulation, event handling, and URL parameter processing to vanilla JavaScript.

@@ -5,10 +5,7 @@
 ### Core Technologies
 - **HTML5**: Basic structure and form elements
 - **CSS**: Styling and layout
-- **JavaScript**: Core application logic and calculations
-- **jQuery**: DOM manipulation and event handling (version 3.7.1)
-- **jQuery Migrate**: Assists with migrating older jQuery code (version 3.4.1)
-- **jQuery BBQ**: URL parameter handling for shareable designs
+- **JavaScript**: Core application logic, calculations, DOM manipulation, and event handling (Vanilla JS, ES6+ features). jQuery was removed on 5/11/2025.
 
 ### Visualization Libraries
 - **SVG.js**: Vector graphics library for in-browser visualization (version 3.2.0)
@@ -36,10 +33,6 @@ FretFind2D/
 │   ├── fretfind.css      # Application styles
 │   ├── fretfind.js       # Core application logic
 │   └── libs/             # Third-party dependencies
-│       ├── jquery-3.7.1.min.js
-│       ├── jquery-migrate-3.4.1.min.js
-│       ├── jquery-browser-fix.js
-│       ├── jquery.ba-bbq.min.js
 │       ├── svg.min.js
 │       ├── FileSaver.min.js
 │       ├── base64.js
@@ -88,9 +81,6 @@ FretFind2D/
 ### Third-Party Libraries
 | Library      | Version | Purpose                             | License    |
 |--------------|---------|-------------------------------------|------------|
-| jQuery       | 3.7.1   | DOM manipulation                    | MIT        |
-| jQuery Migrate | 3.4.1 | jQuery version migration aid        | MIT        |
-| jQuery BBQ   | -       | URL parameter handling              | MIT/GPL    |
 | SVG.js       | 3.2.0   | Vector graphics / Interactive visualization | MIT        |
 | FileSaver.js | -       | Client-side file saving             | MIT        |
 | jsPDF        | -       | PDF generation                      | MIT        |
@@ -115,10 +105,10 @@ FretFind2D/
 - **String and Fret Positioning**: Complex algorithm for multi-scale layouts
 
 ### User Interface Patterns
-- Form-based input for all parameters
-- Real-time visualization updates on parameter change
-- Toggle-based alternatives for various configuration options
-- Interactive help system with toggleable detailed explanations
+- Form-based input for all parameters, using vanilla JavaScript for event handling and DOM updates.
+- Real-time visualization updates on parameter change.
+- Toggle-based alternatives for various configuration options.
+- Interactive help system with toggleable detailed explanations.
 
 ### Export Workflow
 - User configures fretboard design
