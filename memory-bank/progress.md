@@ -68,16 +68,40 @@ FretFind2D is a fully functional application that successfully fulfills its core
 
 ## What's Left to Build
 
-While the core application is complete, there are several potential enhancements that could be considered:
+This section outlines planned enhancements and future development directions, aligned with the roadmap in `README.md`.
 
-### Potential Enhancements
-- [ ] UI modernization with responsive design
-- [ ] Library updates (jQuery, etc.)
-- [ ] Additional visualization options (3D view, instrument preview)
-- [ ] Design preset library for common instrument types
-- [ ] Sound preview based on design parameters
-- [ ] More comprehensive parameter validation
-- [ ] Undo/redo functionality
+### Short Term Goals: Technical Debt & Core UX Improvements
+- [x] Implement AI-assisted coding to speed development (Completed)
+- [ ] **Technical Modernization:**
+    - [ ] Migrate core dependencies:
+        - [ ] Migrate from Raphael.js (no longer maintained) to a modern SVG library (e.g., SVG.js)
+        - [ ] Update jQuery to the latest version (currently on 1.4.2, needs update)
+        - [ ] Update other outdated dependencies
+    - [ ] Refactor code to use modern JavaScript patterns
+- [ ] **User Experience (UI/UX) Enhancements:**
+    - [ ] Modernize the user interface and implement responsive design for better mobile/tablet usability
+    - [ ] Improve overall visual appeal and ease of understanding for the fretboard visualization
+    - [ ] Streamline parameter input, especially for common use cases
+    - [ ] Support fractional inches for input and output
+    - [ ] Implement a precision setting to control the number of decimal places in measurements
+    - [ ] Make data tables more usable (e.g., initially hidden, searchable, sortable)
+- [ ] Add a library of preset designs for popular instrument types
+
+### Medium Term Goals: Feature Enhancements & Stability
+- [ ] Finalize and stabilize the "individual string scaling" feature (currently experimental)
+- [ ] Implement undo/redo functionality for design changes
+- [ ] Add more comprehensive parameter validation
+- [ ] Explore additional temperament and scale options
+- [ ] Implement a basic sound preview feature based on design parameters
+- [ ] Consider additional visualization options (e.g., simplified 3D view, instrument body preview)
+
+### Long Term Goals: Advanced Functionality & Project Evolution
+- [ ] Implement a generic string tension calculator
+- [ ] Develop vendor-specific string tension libraries (potentially pulling from public datasheets)
+- [ ] Create offline tooling to normalize and ingest string vendor data
+- [ ] Implement vendor-aware string tension modeling
+- [ ] Build a "best-fit" solver to recommend string gauges based on target tension or feel
+- [ ] Evaluate renaming the project if functionality significantly expands beyond fretboard design
 
 ### Documentation Improvements
 - [ ] Getting started guide for beginners
@@ -109,19 +133,10 @@ While the core application is complete, there are several potential enhancements
 
 ## Next Development Priorities
 
-Should development continue, these would be the recommended priorities:
+Should development continue, these are the top recommended priorities, focusing on immediate impact and foundational improvements (derived from Short Term Goals):
 
-1. **Technical Modernization**:
-   - Update dependencies to current versions
-   - Refactor code to use modern JavaScript patterns
-   - Improve responsive design for mobile devices
-
-2. **User Experience Improvements**:
-   - Streamline parameter input for common use cases
-   - Add preset designs for popular instrument types
-   - Improve visualization with more realistic rendering
-
-3. **Feature Expansion**:
-   - Finalize the experimental individual string scaling feature
-   - Add additional temperament and scale options
-   - Implement sound preview functionality
+1.  **Migrate Core Dependencies**: Address technical debt by updating Raphael.js, jQuery, and other outdated libraries.
+2.  **Modernize UI & Implement Responsive Design**: Improve the user interface for current standards and ensure usability across devices.
+3.  **Refactor Code to Modern JavaScript Patterns**: Enhance code maintainability and performance.
+4.  **Improve Fretboard Visualization**: Make the visual output more appealing and easier to understand.
+5.  **Support Fractional Inches**: Add support for fractional inch measurements for input and output, a key UX improvement for many users.
