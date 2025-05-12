@@ -36,6 +36,9 @@ Based on the repository observation, the project has:
 - Preserving the mathematical model that enables complex fretboard designs
 - Maintaining the separation between core calculation logic and UI
 
+### Operational Efficiency
+- **Token Usage Optimization**: Actively employing strategies to minimize input token usage during AI-assisted development. This includes concise communication, strategic tool use, and efficient file handling, as detailed in `.clinerules/token-management.md`.
+
 ## Next Steps
 
 Potential next steps for the project could include:

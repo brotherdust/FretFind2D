@@ -1,7 +1,7 @@
 # MCP Tools Usage Guidelines
 
 ## Brief overview
-These guidelines outline best practices for working with MCP (Model Context Protocol) servers in the project, with specific focus on Git MCP for version control, Context7 for documentation retrieval, and Sequential Thinking for structured problem-solving.
+These guidelines outline best practices for working with MCP (Model Context Protocol) servers in the project, with specific focus on Git MCP for version control, Context7 for documentation retrieval, and Sequential Thinking for structured problem-solving. All MCP tool usage should also be mindful of token efficiency, as detailed in `.clinerules/token-management.md`.
 
 ## Git MCP usage
 - Use Git MCP for all version control operations rather than direct shell commands

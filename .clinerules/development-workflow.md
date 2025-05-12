@@ -1,7 +1,7 @@
 # Development Workflow Guidelines
 
 ## Brief overview
-These guidelines define the preferred development workflow for this project, focusing on sequential thinking approaches and version control practices. Following these practices ensures consistent, well-documented, and methodical development.
+These guidelines define the preferred development workflow for this project, focusing on sequential thinking approaches, version control practices, and overall operational efficiency. This includes being mindful of AI interaction costs by following token management strategies outlined in `.clinerules/token-management.md`. Following these practices ensures consistent, well-documented, and methodical development.
 
 ## Sequential thinking approach
 - ALWAYS use the sequentialthinking MCP tool when solving complex problems

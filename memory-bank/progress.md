@@ -43,6 +43,7 @@ FretFind2D is a fully functional application that successfully fulfills its core
 #### Project Management & Process
 - ✅ Establishment of comprehensive project guidelines (`.clinerules/`) covering commit standards, MCP tool usage, development workflows, and progress tracking.
 - ✅ Implementation of a structured Memory Bank system for maintaining project knowledge and context.
+- ✅ Establishment of token management guidelines to optimize AI interaction costs.
 
 ### Known Issues
 
