@@ -517,8 +517,9 @@ var ff = (function(){
         var modelBBox = getExtents(guitar);
 
         // 2. Get container pixel dimensions
-        var containerWidth = $('#diagram').width();
-        var containerHeight = $('#diagram').height();
+        var diagramElement = document.getElementById('diagram');
+        var containerWidth = diagramElement ? diagramElement.offsetWidth : 0;
+        var containerHeight = diagramElement ? diagramElement.offsetHeight : 0;
         drawSurface.size(containerWidth, containerHeight);
         // Set viewBox to pixel dimensions for 1:1 mapping, if not default
         drawSurface.viewbox(0, 0, containerWidth, containerHeight);
@@ -1047,9 +1048,13 @@ var ff = (function(){
         
         return output.join('');
     };
-    
     var getAlt = function(id) {
-        return $('#'+id).find('dt.selected-alt').attr('id');
+        const element = document.getElementById(id);
+        if (element) {
+            const selectedDt = element.querySelector('dt.selected-alt');
+            return selectedDt ? selectedDt.id : null;
+        }
+        return null;
     };
     var getStr = function(id) {
         return document.getElementById(id).value;
@@ -1062,51 +1067,92 @@ var ff = (function(){
     };
     var getTuning = function(id) {
         var tunings = [];
-        $('#'+id+' > input').each(function(_,item){tunings.push(parseInt(item.value, 10));});
+        const parentElement = document.getElementById(id);
+        if (parentElement) {
+            parentElement.querySelectorAll('input').forEach(item => {
+                tunings.push(parseInt(item.value, 10));
+            });
+        }
         return tunings;
     };
     var setTuning = function(tuning_id, string_count_id, change_callback, tunings) {
-        var strings = getInt(string_count_id);
+        var strings = getInt(string_count_id); // getInt is already vanilla JS
         if (typeof tunings === 'undefined') {
-            tunings = getTuning(tuning_id);
+            tunings = getTuning(tuning_id); // getTuning is now refactored
         }
         var output = '';
         for (var i=0; i<strings; i++) {
             output += 'string '+(i+1)+' <input type="text" value="'+(tunings[i] || 0)+'" /><br />';
         }
-        $('#'+tuning_id).html(output);
-        $('#'+tuning_id+' > input').change(change_callback);
+        const tuningElement = document.getElementById(tuning_id);
+        if (tuningElement) {
+            tuningElement.innerHTML = output;
+            tuningElement.querySelectorAll('input').forEach(input => {
+                input.addEventListener('change', change_callback);
+            });
+        }
     };
     var initHelp = function(form_id) {
-        //create help links for each element in the help class 
-        //append to previous sibling dt
-        $('#'+form_id).find('dd.help').prev().prev().
-            append(' [<a class="help" href="#">?</a>]').
-            find('a.help').toggle(
-                function(){$(this).parent().next().next().css('display','block');},
-                function(){$(this).parent().next().next().css('display','none');}
-            );
+        const form = document.getElementById(form_id);
+        if (form) {
+            form.querySelectorAll('dd.help').forEach(helpDd => {
+                const dtElement = helpDd.previousElementSibling;
+                if (dtElement && dtElement.previousElementSibling && dtElement.previousElementSibling.tagName === 'DT') {
+                    const targetDt = dtElement.previousElementSibling;
+                    
+                    const helpLink = document.createElement('a');
+                    helpLink.className = 'help';
+                    helpLink.href = '#';
+                    helpLink.textContent = '?';
+
+                    targetDt.appendChild(document.createTextNode(' ['));
+                    targetDt.appendChild(helpLink);
+                    targetDt.appendChild(document.createTextNode(']'));
+
+                    helpLink.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        const displayStyle = helpDd.style.display === 'block' ? 'none' : 'block';
+                        helpDd.style.display = displayStyle;
+                    });
+                }
+            });
+        }
     };
     var initAlternatives = function(form_id, change_callback) {
-        //create alternative switches
-        $('#'+form_id).find('dl.alternative').each(function(_,item){
-            $(item).children('dt').each(function(_,jtem){
-                var alt = $(jtem).next();
-                $(jtem).click(function(){
-                    //visual que for selected
-                    $(this).parent().children('dt').removeClass('selected-alt');
-                    $(this).addClass('selected-alt');
-                    //display selected dd
-                    $(this).parent().children('dd').css('display','none');
-                    alt.css('display','block');
-                    change_callback();
+        const form = document.getElementById(form_id);
+        if (form) {
+            form.querySelectorAll('dl.alternative').forEach(dlAlternative => {
+                const dts = Array.from(dlAlternative.children).filter(child => child.tagName === 'DT');
+                const dds = Array.from(dlAlternative.children).filter(child => child.tagName === 'DD');
+
+                dts.forEach(dtElement => {
+                    let altDd = dtElement.nextElementSibling;
+                    // Ensure altDd is actually a DD, as HTML structure might vary or have other elements.
+                    // Given the HTML, it should be a DD.
+                    if (altDd && altDd.tagName === 'DD') {
+                        dtElement.addEventListener('click', function() {
+                            dts.forEach(d => d.classList.remove('selected-alt'));
+                            this.classList.add('selected-alt');
+                            dds.forEach(dd => dd.style.display = 'none');
+                            altDd.style.display = 'block';
+                            change_callback();
+                        });
+                    }
                 });
+
+                // Reorder dt elements to the top of their dlAlternative parent
+                dts.slice().reverse().forEach(dtElement => { // Use slice() to avoid modifying dts if it's used later
+                    dlAlternative.insertBefore(dtElement, dlAlternative.firstChild);
+                });
+                
+                // Initialize first dt as selected by triggering a click
+                // After reordering, the first DT child is the one to click.
+                const firstDt = dlAlternative.querySelector('dt');
+                if (firstDt) {
+                     firstDt.click(); 
+                }
             });
-            //reorder dt to top
-            $(item).children('dt').prependTo($(item));
-            //initialize first as selected
-            $(item).children('dt').first().click();
-        });
+        }
     };
     
     return {
@@ -1140,6 +1186,61 @@ var ff = (function(){
         getTuning: getTuning,
         setTuning: setTuning,
         initHelp: initHelp,
-        initAlternatives: initAlternatives
+        initAlternatives: initAlternatives,
+        // New helpers moved from fretfind.html and refactored
+        getLengths: function(id) {
+            var lengths = [];
+            const parentElement = document.getElementById(id);
+            if (parentElement) {
+                parentElement.querySelectorAll('input').forEach(item => {
+                    lengths.push(parseFloat(item.value));
+                });
+            }
+            return lengths;
+        },
+        setLengths: function(length_id, string_count_id, change_callback, lengths) {
+            var strings = this.getInt(string_count_id);
+            if (typeof lengths === 'undefined') {
+                lengths = this.getLengths(length_id);
+            }
+            var output = '';
+            for (var i=0; i<strings; i++) {
+                output += 'string '+(i+1)+' <input type="text" value="'+(lengths[i] || 25+(i*.5))+'" /><br />';
+            }
+            const lengthElement = document.getElementById(length_id);
+            if (lengthElement) {
+                lengthElement.innerHTML = output;
+                lengthElement.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('change', change_callback);
+                });
+            }
+        },
+        getGauges: function(id) {
+            var gauges = [];
+            const parentElement = document.getElementById(id);
+            if (parentElement) {
+                parentElement.querySelectorAll('input').forEach(item => {
+                    gauges.push(parseFloat(item.value));
+                });
+            }
+            return gauges;
+        },
+        setGauges: function(gauge_id, string_count_id, change_callback, gauges) {
+            var strings = this.getInt(string_count_id);
+            if (typeof gauges === 'undefined') {
+                gauges = this.getGauges(gauge_id);
+            }
+            var output = '';
+            for (var i=0; i<strings; i++) {
+                output += 'string '+(i+1)+' <input type="text" value="'+(gauges[i] || 0.0)+'" /><br />';
+            }
+            const gaugeElement = document.getElementById(gauge_id);
+            if (gaugeElement) {
+                gaugeElement.innerHTML = output;
+                gaugeElement.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('change', change_callback);
+                });
+            }
+        }
     };
 }());

@@ -24,10 +24,6 @@
 <meta name="keywords" lang="en" content="FretFind, stringed instrument, luthier, fret, guitar, fret placement calculator" />
 <meta name="description" lang="en" content="FretFind2d models fretboards as a system of line segments on a two dimensional plane to design freboards with multiple scale lenghts and microtonal scales." />
 <link rel="stylesheet" type="text/css" href="fretfind.css" />
-<script type="text/javascript" src="libs/jquery-3.7.1.min.js"><!-- --></script>
-<script type="text/javascript" src="libs/jquery-migrate-3.4.1.min.js"><!-- --></script>
-<script type="text/javascript" src="libs/jquery-browser-fix.js"><!-- --></script>
-<script type="text/javascript" src="libs/jquery.ba-bbq.min.js"><!-- --></script>
 <script type="text/javascript" src="libs/svg.min.js"><!-- --></script> <!-- Replaced Raphael.js with SVG.js -->
 <script type="text/javascript" src="libs/FileSaver.min.js"><!-- --></script>
 <script type="text/javascript" src="libs/base64.js"><!-- --></script>
@@ -37,41 +33,7 @@
 <script type="text/javascript">
 //<![CDATA[
 
-var getLengths = function(id) {
-    var lengths = [];
-    $('#'+id+' > input').each(function(_,item){lengths.push(parseFloat(item.value));});
-    return lengths;
-};
-var setLengths = function(length_id, string_count_id, change_callback, lengths) {
-    var strings = ff.getInt(string_count_id);
-    if (typeof lengths === 'undefined') {
-        lengths = getLengths(length_id);
-    }
-    var output = '';
-    for (var i=0; i<strings; i++) {
-        output += 'string '+(i+1)+' <input type="text" value="'+(lengths[i] || 25+(i*.5))+'" /><br />';
-    }
-    $('#'+length_id).html(output);
-    $('#'+length_id+' > input').change(change_callback);
-};
-
-var getGauges = function(id) {
-    var gauges = [];
-    $('#'+id+' > input').each(function(_,item){gauges.push(parseFloat(item.value));});
-    return gauges;
-};
-var setGauges = function(gauge_id, string_count_id, change_callback, gauges) {
-    var strings = ff.getInt(string_count_id);
-    if (typeof gauges === 'undefined') {
-        gauges = getGauges(gauge_id);
-    }
-    var output = '';
-    for (var i=0; i<strings; i++) {
-        output += 'string '+(i+1)+' <input type="text" value="'+(gauges[i] || 0.0)+'" /><br />';
-    }
-    $('#'+gauge_id).html(output);
-    $('#'+gauge_id+' > input').change(change_callback);
-};
+// Helper functions (getLengths, setLengths, getGauges, setGauges) are now part of the ff object in fretfind.js
 
 // computes string offsets along the nut itself, assuming that width does not include the overhang (it's already accounted for)
 // if "proportional" is not selected, gauges will all be 0 and this will simply return
@@ -91,21 +53,13 @@ var computeOffsets = function(strings, gauges, actual_length, perp_width, spacin
 
 // get the user-selected display options for on-screen display and all output options (i.e. SVG, PDF).
 var getDisplayOptions = function() {
-
-    var showStrings = $("#showStrings").prop("checked");
-    var showFretboardEdges = $("#showFretboardEdges").prop("checked");
-    var showMetas = $("#showMetas").prop("checked");
-    var showBoundingBox = $("#showBoundingBox").prop("checked");
-    var extendFrets = $("#extendFrets").prop("checked");
-
     return {
-        showStrings: showStrings,
-        showFretboardEdges: showFretboardEdges,
-        showMetas: showMetas,
-        showBoundingBox: showBoundingBox,
-        extendFrets: extendFrets
+        showStrings: document.getElementById("showStrings").checked,
+        showFretboardEdges: document.getElementById("showFretboardEdges").checked,
+        showMetas: document.getElementById("showMetas").checked,
+        showBoundingBox: document.getElementById("showBoundingBox").checked,
+        extendFrets: document.getElementById("extendFrets").checked
     };
-    
 }
 
 // output a guitar (scale, tuning and strings (with fretboard edges))
@@ -121,10 +75,11 @@ var getGuitar = function() {
     var nutWidth = ff.getFlt('nutWidth');
     var bridgeWidth = ff.getFlt('bridgeWidth');
     var strings = ff.getInt('numStrings');
-    var units = $("input:checked[name='units']").val();
+    var unitsElement = document.querySelector("input[name='units']:checked");
+    var units = unitsElement ? unitsElement.value : 'in'; // Default to 'in' if none selected
 
-    var gauges = getGauges('igauges');
-    var lengths = getLengths('ilengths');
+    var gauges = ff.getGauges('igauges'); // Use ff.getGauges
+    var lengths = ff.getLengths('ilengths'); // Use ff.getLengths
     if (lengthMode === 'individual') {
       scaleLengthF = lengths[0];
       scaleLengthL = lengths[lengths.length-1];
@@ -282,84 +237,139 @@ var getGuitar = function() {
 
 var getLink = function() {
     var params = {};
-    $('#worksheet').find('input[id], textarea[id]').each(function(index,item){
-        var id = $(item).attr('id');
-        params[id] = $(item).val();
+    document.getElementById('worksheet').querySelectorAll('input[id], textarea[id]').forEach(item => {
+        params[item.id] = item.value;
     });
     params.t = ff.getTuning('tuning');
-    params.il = getLengths('ilengths');
-    params.ig = getGauges('igauges');
-    params.u = $("input:checked[name='units']").val();
+    params.il = ff.getLengths('ilengths'); // Use ff.getLengths
+    params.ig = ff.getGauges('igauges');   // Use ff.getGauges
+    
+    const unitsElement = document.querySelector("input[name='units']:checked");
+    params.u = unitsElement ? unitsElement.value : 'in';
+
     params.sl = ff.getAlt('length');
     params.ns = ff.getAlt('spacing');
     params.scale = ff.getAlt('scale');
     params.o = ff.getAlt('overhang');
-    var location = window.location.toString().replace(/#.*/,'');
-    return location+'#'+$.param(params);
+    
+    var baseLocation = window.location.href.split('#')[0];
+    return baseLocation + '#' + new URLSearchParams(params).toString();
 };
 
 //surface for drawing fretboard
-var drawSurface; // Changed from 'paper' to 'drawSurface' for SVG.js
+var drawSurface; 
 
 var processChanges = false;
 var onChange = function() {
     if (processChanges) {
         var guitar = getGuitar();
         guitar = ff.fretGuitar(guitar);
-        ff.drawGuitar(drawSurface, guitar, getDisplayOptions()); // Changed from 'paper'
-        $('#tables').html(ff.getTable(guitar));
-        $('#bookmark').attr('href', getLink());
+        ff.drawGuitar(drawSurface, guitar, getDisplayOptions());
+        document.getElementById('tables').innerHTML = ff.getTable(guitar);
+        document.getElementById('bookmark').href = getLink();
     }
 };
 
 var updateFormFromHash = function() {
-    var params = $.deparam.fragment();
-    $('#worksheet').find('input[id], textarea[id]').each(function(index,item){
-        var id = $(item).attr('id');
-        if (params.hasOwnProperty(id)){
-            $(item).val(params[id]);
+    const hash = window.location.hash.substring(1);
+    const urlParams = new URLSearchParams(hash);
+    const params = {};
+
+    for (const [key, value] of urlParams.entries()) {
+        // This basic parsing won't handle arrays from BBQ like t[], il[], ig[] correctly.
+        // For now, it takes the last value if a key is repeated, or treats it as a string.
+        // A more robust solution would be needed if complex array/object structures were common in old URLs.
+        // Given the usage (t, il, ig are specifically handled later), this might be okay for other params.
+        if (params.hasOwnProperty(key)) {
+            if (!Array.isArray(params[key])) {
+                params[key] = [params[key]];
+            }
+            params[key].push(value);
+        } else {
+            params[key] = value;
+        }
+    }
+    
+    document.getElementById('worksheet').querySelectorAll('input[id], textarea[id]').forEach(item => {
+        if (params.hasOwnProperty(item.id)) {
+            // If param was an array from BBQ, this would take the array as string.
+            // Assuming simple values for most inputs.
+            item.value = Array.isArray(params[item.id]) ? params[item.id].join(',') : params[item.id];
         }
     });
-    setLengths('ilengths','numStrings', onChange, (params['il'] || []));
-    setGauges('igauges', 'numStrings', onChange, (params['ig'] || []));
-    ff.setTuning('tuning','numStrings', onChange, (params['t'] || []));
-    $("input[name='units']").filter("[value='"+(params['u']||'in')+"']").click();
-    $('#'+params.sl).click();
-    $('#'+params.ns).click();
-    $('#'+params.scale).click();
-    $('#'+params.o).click();
+
+    // Handle specific array-like parameters from BBQ if they exist
+    // jQuery BBQ might serialize arrays like t[]=0&t[]=7...
+    // URLSearchParams will parse this as 't[]': ['0', '7']. We need to handle this.
+    // Or if it was t=0,7,3... then params.t would be "0,7,3..."
+    
+    let p_il = [];
+    if (params['il']) p_il = Array.isArray(params['il']) ? params['il'].map(Number) : params['il'].toString().split(',').map(Number);
+    else if (urlParams.has('il[]')) p_il = urlParams.getAll('il[]').map(Number);
+    
+    let p_ig = [];
+    if (params['ig']) p_ig = Array.isArray(params['ig']) ? params['ig'].map(Number) : params['ig'].toString().split(',').map(Number);
+    else if (urlParams.has('ig[]')) p_ig = urlParams.getAll('ig[]').map(Number);
+
+    let p_t = [];
+    if (params['t']) p_t = Array.isArray(params['t']) ? params['t'].map(Number) : params['t'].toString().split(',').map(Number);
+    else if (urlParams.has('t[]')) p_t = urlParams.getAll('t[]').map(Number);
+
+
+    ff.setLengths('ilengths','numStrings', onChange, p_il); // Use ff.setLengths
+    ff.setGauges('igauges', 'numStrings', onChange, p_ig);   // Use ff.setGauges
+    ff.setTuning('tuning','numStrings', onChange, p_t);
+
+    const unitValue = params['u'] || 'in';
+    const unitRadio = document.querySelector("input[name='units'][value='" + unitValue + "']");
+    if (unitRadio) unitRadio.checked = true; // .click() might trigger onChange too early
+
+    // For alternative selectors, we need to ensure the elements exist before clicking
+    if (params.sl && document.getElementById(params.sl)) document.getElementById(params.sl).click();
+    if (params.ns && document.getElementById(params.ns)) document.getElementById(params.ns).click();
+    if (params.scale && document.getElementById(params.scale)) document.getElementById(params.scale).click();
+    if (params.o && document.getElementById(params.o)) document.getElementById(params.o).click();
 };
 
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
     ff.initHelp('worksheet');
     ff.initAlternatives('worksheet', onChange);
-    $('#numStrings').change(function(){
-      ff.setTuning('tuning', 'numStrings', onChange);
-      setLengths('ilengths','numStrings', onChange);
-      setGauges('igauges', 'numStrings', onChange);
+    
+    const numStringsElement = document.getElementById('numStrings');
+    if (numStringsElement) {
+        numStringsElement.addEventListener('change', function(){
+            ff.setTuning('tuning', 'numStrings', onChange);
+            ff.setLengths('ilengths','numStrings', onChange); // Use ff.setLengths
+            ff.setGauges('igauges', 'numStrings', onChange);   // Use ff.setGauges
+        });
+    }
+
+    document.getElementById('worksheet').querySelectorAll('input, textarea').forEach(el => {
+        el.addEventListener('change', onChange);
     });
-    $('#worksheet').find('input, textarea').change(onChange);
+
     ff.setTuning('tuning', 'numStrings', onChange);
-    setLengths('ilengths','numStrings', onChange);
-    setGauges('igauges', 'numStrings', onChange);
+    ff.setLengths('ilengths','numStrings', onChange); // Use ff.setLengths
+    ff.setGauges('igauges', 'numStrings', onChange);   // Use ff.setGauges
     
-    // Initialize Raphael with responsive dimensions
-    var diagramWidth = $('#diagram').width();
+    const diagramElement = document.getElementById('diagram');
+    var diagramWidth = diagramElement ? diagramElement.offsetWidth : 600; // Default width
     var diagramHeight = Math.max(500, window.innerHeight * 0.6);
-    $('#diagram').css('height', diagramHeight + 'px');
-    // paper = Raphael('diagram', diagramWidth, diagramHeight); // Raphael initialization removed
-    drawSurface = SVG().addTo('#diagram').size(diagramWidth, diagramHeight); // SVG.js initialization
+    if (diagramElement) diagramElement.style.height = diagramHeight + 'px';
     
-    // Handle window resize
-    $(window).resize(function() {
-        // Debounce the resize event
+    drawSurface = SVG().addTo('#diagram').size(diagramWidth, diagramHeight); 
+    
+    window.addEventListener('resize', function() {
         clearTimeout(window.resizeTimer);
         window.resizeTimer = setTimeout(function() {
-            // Update diagram height on resize
-            var diagramHeight = Math.max(500, window.innerHeight * 0.6);
-            $('#diagram').css('height', diagramHeight + 'px');
-            // Redraw the guitar
-            onChange();
+            const currentDiagramElement = document.getElementById('diagram'); // Re-fetch in case it was re-rendered
+            if (currentDiagramElement) {
+                 var newDiagramHeight = Math.max(500, window.innerHeight * 0.6);
+                 currentDiagramElement.style.height = newDiagramHeight + 'px';
+                 // SVG.js might need explicit resize on the surface too, or redraw
+                 // drawSurface.size(currentDiagramElement.offsetWidth, newDiagramHeight); // If SVG.js surface needs resize
+            }
+            onChange(); // This will redraw with new dimensions
         }, 250);
     });
     
@@ -372,76 +382,53 @@ $(document).ready(function() {
         isFileSaverSupported = !!new Blob;
     } catch (e) {}
 
-    var dl = $('#downloads');
-    if (isFileSaverSupported){
-        
-        dl.append('<dt>DXF</dt><dd><button id="download_dxf">Download</button></dd>');
-        $('#download_dxf').click(function(){
-            var guitar = getGuitar();
-            guitar = ff.fretGuitar(guitar);
-            var blob = new Blob([ff.getDXF(guitar, getDisplayOptions())], {type: "image/vnd.dxf"});
-            saveAs(blob, "fretboard.dxf");
+    var dl = document.getElementById('downloads');
+    if (isFileSaverSupported && dl){
+        const downloads = [
+            { id: 'dxf', name: 'DXF', type: 'image/vnd.dxf', getter: ff.getDXF },
+            { 
+                id: 'pdfm', name: 'PDF (multi-page)', type: 'application/pdf', getter: ff.getPDFMultipage, 
+                options: '<label><input type="radio" name="pdfm_pagesize" value="letter" checked="checked"/>letter</label><br />' +
+                         '<label><input type="radio" name="pdfm_pagesize" value="a4" />A4</label><br />' +
+                         '<label><input type="radio" name="pdfm_pagesize" value="legal" />legal</label>'
+            },
+            { id: 'pdf', name: 'PDF (single page)', type: 'application/pdf', getter: ff.getPDF },
+            { id: 'svg', name: 'SVG', type: 'image/svg+xml', getter: ff.getSVG },
+            { id: 'csv', name: 'CSV', type: 'text/csv', getter: ff.getCSV },
+            { id: 'html', name: 'HTML', type: 'text/html', getter: ff.getHTML },
+            { id: 'tab', name: 'TAB', type: 'text/tab-separated-values', getter: ff.getTAB }
+        ];
+
+        downloads.forEach(d => {
+            let ddContent = '';
+            if (d.options) {
+                ddContent += '<dd>' + d.options + '</dd>';
+            }
+            ddContent += '<dd><button id="download_' + d.id + '">Download</button></dd>';
+            dl.insertAdjacentHTML('beforeend', '<dt>' + d.name + '</dt>' + ddContent);
+            
+            const button = document.getElementById('download_' + d.id);
+            if (button) {
+                button.addEventListener('click', function() {
+                    var guitar = getGuitar();
+                    guitar = ff.fretGuitar(guitar);
+                    let fileContent;
+                    if (d.id === 'pdfm') {
+                        const pagesizeElement = document.querySelector("input[name='pdfm_pagesize']:checked");
+                        const pagesize = pagesizeElement ? pagesizeElement.value : 'letter';
+                        fileContent = d.getter(guitar, getDisplayOptions(), pagesize);
+                    } else {
+                        fileContent = d.getter(guitar, getDisplayOptions ? getDisplayOptions() : guitar); // getDisplayOptions for most, getCSV/TAB/HTML don't need it
+                    }
+                    var blob = new Blob([fileContent], {type: d.type});
+                    saveAs(blob, "fretboard." + d.id.replace('pdfm', 'pdf'));
+                });
+            }
         });
     
-        dl.append('<dt>PDF (multi-page)</dt>' +
-            '<dd>' +
-                '<label><input type="radio" name="pdfm_pagesize" value="letter" checked="checked"/>letter</label><br />' +
-                '<label><input type="radio" name="pdfm_pagesize" value="a4" />A4</label><br />' +
-                '<label><input type="radio" name="pdfm_pagesize" value="legal" />legal</label>' +
-            '</dd>' +
-            '<dd><button id="download_pdfm">Download</button></dd>');
-        $('#download_pdfm').click(function(){
-            var guitar = getGuitar();
-            var pagesize = $("input:checked[name='pdfm_pagesize']").val();
-            guitar = ff.fretGuitar(guitar);
-            var blob = new Blob([ff.getPDFMultipage(guitar, getDisplayOptions(), pagesize)], {type: "application/pdf"});
-            saveAs(blob, "fretboard.pdf");
-        });
-        
-        dl.append('<dt>PDF (single page)</dt><dd><button id="download_pdf">Download</button></dd>');
-        $('#download_pdf').click(function(){
-            var guitar = getGuitar();
-            guitar = ff.fretGuitar(guitar);
-            var blob = new Blob([ff.getPDF(guitar, getDisplayOptions())], {type: "application/pdf"});
-            saveAs(blob, "fretboard.pdf");
-        });
-        
-        dl.append('<dt>SVG</dt><dd><button id="download_svg">Download</button></dd>');
-        $('#download_svg').click(function(){
-            var guitar = getGuitar();
-            guitar = ff.fretGuitar(guitar);
-            var blob = new Blob([ff.getSVG(guitar, getDisplayOptions())], {type: "image/svg+xml"});
-            saveAs(blob, "fretboard.svg");
-        });
-        
-        dl.append('<dt>CSV</dt><dd><button id="download_csv">Download</button></dd>');
-        $('#download_csv').click(function(){
-            var guitar = getGuitar();
-            guitar = ff.fretGuitar(guitar);
-            var blob = new Blob([ff.getCSV(guitar)], {type: "text/csv"});
-            saveAs(blob, "fretboard.csv");
-        });
-        
-        dl.append('<dt>HTML</dt><dd><button id="download_html">Download</button></dd>');
-        $('#download_html').click(function(){
-            var guitar = getGuitar();
-            guitar = ff.fretGuitar(guitar);
-            var blob = new Blob([ff.getHTML(guitar)], {type: "text/html"});
-            saveAs(blob, "fretboard.html");
-        });
-        
-        dl.append('<dt>TAB</dt><dd><button id="download_tab">Download</button></dd>');
-        $('#download_tab').click(function(){
-            var guitar = getGuitar();
-            guitar = ff.fretGuitar(guitar);
-            var blob = new Blob([ff.getTAB(guitar)], {type: "text/tab-separated-values"});
-            saveAs(blob, "fretboard.tab");
-        });
-    
-    } else {
-        dl.append('<dd><b>Buttons missing?<br/>Downloads require a modern browser that supports <a href="https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob#Browser_compatibility">the Blob constructor API</a>.</b></dd>');
+    } else if (dl) {
+        dl.insertAdjacentHTML('beforeend', '<dd><b>Buttons missing?<br/>Downloads require a modern browser that supports <a href="https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob#Browser_compatibility">the Blob constructor API</a>.</b></dd>');
     }
-    
 });
 
 //]]>
