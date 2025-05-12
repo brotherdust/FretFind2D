@@ -238,8 +238,23 @@ var getGuitar = function() {
 var getLink = function() {
     var params = {};
     document.getElementById('worksheet').querySelectorAll('input[id], textarea[id]').forEach(item => {
-        params[item.id] = item.value;
+        // Only include if value is not empty, to keep URL cleaner
+        if (item.value !== "") {
+            params[item.id] = item.value;
+        }
     });
+    // Ensure specific params are handled even if their inputs might be empty initially
+    // For example, if nutStringSpacing is calculated and populated, it should be in the link.
+    // The querySelectorAll already gets all inputs with IDs.
+    // We need to ensure that if an ID is expected (like nutStringSpacing), its value is captured.
+    // The current loop does this. Let's add specific keys for new spacing params if not already captured by the loop.
+    if (document.getElementById('nutStringSpacing').value) {
+        params.nssn = document.getElementById('nutStringSpacing').value; // nut string spacing nut
+    }
+    if (document.getElementById('bridgeStringSpacing').value) {
+        params.nssb = document.getElementById('bridgeStringSpacing').value; // nut string spacing bridge
+    }
+
     params.t = ff.getTuning('tuning');
     params.il = ff.getLengths('ilengths'); // Use ff.getLengths
     params.ig = ff.getGauges('igauges');   // Use ff.getGauges
@@ -329,6 +344,30 @@ var updateFormFromHash = function() {
     if (params.ns && document.getElementById(params.ns)) document.getElementById(params.ns).click();
     if (params.scale && document.getElementById(params.scale)) document.getElementById(params.scale).click();
     if (params.o && document.getElementById(params.o)) document.getElementById(params.o).click();
+
+    // Populate new string spacing fields if present in URL
+    if (params.nssn && document.getElementById('nutStringSpacing')) {
+        document.getElementById('nutStringSpacing').value = params.nssn;
+    }
+    if (params.nssb && document.getElementById('bridgeStringSpacing')) {
+        document.getElementById('bridgeStringSpacing').value = params.nssb;
+    }
+    
+    // After populating from URL, establish consistency
+    // Prioritize spacing if available from URL, otherwise calculate spacing from width
+    const numStringsVal = ff.getInt('numStrings'); // get numStrings once
+
+    if (document.getElementById('nutStringSpacing') && document.getElementById('nutStringSpacing').value !== "" && numStringsVal >=2) {
+        ff.updateWidthFromSpacing('nutStringSpacing', 'nutWidth', 'numStrings');
+    } else if (document.getElementById('nutWidth') && document.getElementById('nutWidth').value !== "" && numStringsVal >=2) {
+        ff.updateSpacingFromWidth('nutWidth', 'nutStringSpacing', 'numStrings');
+    }
+
+    if (document.getElementById('bridgeStringSpacing') && document.getElementById('bridgeStringSpacing').value !== "" && numStringsVal >=2) {
+        ff.updateWidthFromSpacing('bridgeStringSpacing', 'bridgeWidth', 'numStrings');
+    } else if (document.getElementById('bridgeWidth') && document.getElementById('bridgeWidth').value !== "" && numStringsVal >=2) {
+        ff.updateSpacingFromWidth('bridgeWidth', 'bridgeStringSpacing', 'numStrings');
+    }
 };
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -336,21 +375,85 @@ document.addEventListener('DOMContentLoaded', function() {
     ff.initAlternatives('worksheet', onChange);
     
     const numStringsElement = document.getElementById('numStrings');
+    const nutWidthElement = document.getElementById('nutWidth');
+    const bridgeWidthElement = document.getElementById('bridgeWidth');
+    const nutStringSpacingElement = document.getElementById('nutStringSpacing');
+    const bridgeStringSpacingElement = document.getElementById('bridgeStringSpacing');
+
     if (numStringsElement) {
-        numStringsElement.addEventListener('change', function(){
+        numStringsElement.addEventListener('change', function() {
+            // Per requirement, when numStrings changes, spacing takes precedence.
+            // Update widths based on current spacing values.
+            ff.updateWidthFromSpacing('nutStringSpacing', 'nutWidth', 'numStrings');
+            ff.updateWidthFromSpacing('bridgeStringSpacing', 'bridgeWidth', 'numStrings');
+            
+            // Original tasks for numStrings change
             ff.setTuning('tuning', 'numStrings', onChange);
-            ff.setLengths('ilengths','numStrings', onChange); // Use ff.setLengths
-            ff.setGauges('igauges', 'numStrings', onChange);   // Use ff.setGauges
+            ff.setLengths('ilengths','numStrings', onChange);
+            ff.setGauges('igauges', 'numStrings', onChange);
+            onChange(); // Trigger full recalculation
         });
     }
 
-    document.getElementById('worksheet').querySelectorAll('input, textarea').forEach(el => {
-        el.addEventListener('change', onChange);
+    if (nutWidthElement) {
+        nutWidthElement.addEventListener('input', function() { // Use 'input' for more responsive updates
+            ff.updateSpacingFromWidth('nutWidth', 'nutStringSpacing', 'numStrings');
+            onChange();
+        });
+    }
+    if (nutStringSpacingElement) {
+        nutStringSpacingElement.addEventListener('input', function() {
+            ff.updateWidthFromSpacing('nutStringSpacing', 'nutWidth', 'numStrings');
+            onChange();
+        });
+    }
+
+    if (bridgeWidthElement) {
+        bridgeWidthElement.addEventListener('input', function() {
+            ff.updateSpacingFromWidth('bridgeWidth', 'bridgeStringSpacing', 'numStrings');
+            onChange();
+        });
+    }
+    if (bridgeStringSpacingElement) {
+        bridgeStringSpacingElement.addEventListener('input', function() {
+            ff.updateWidthFromSpacing('bridgeStringSpacing', 'bridgeWidth', 'numStrings');
+            onChange();
+        });
+    }
+
+    // General change listener for other inputs (like radio buttons, dropdowns not covered above)
+    // The specific input listeners above will handle their direct updates and then call onChange.
+    // This ensures that other inputs still trigger a general update.
+    document.getElementById('worksheet').querySelectorAll('input[type="radio"], input[type="checkbox"], textarea, select').forEach(el => {
+        // Avoid adding duplicate listeners to elements already handled
+        if (el.id !== 'numStrings' && el.id !== 'nutWidth' && el.id !== 'bridgeWidth' && el.id !== 'nutStringSpacing' && el.id !== 'bridgeStringSpacing') {
+            el.addEventListener('change', onChange);
+        }
+    });
+    // Add listener for text inputs not explicitly handled above, using 'change' to avoid firing too often during typing.
+    document.getElementById('worksheet').querySelectorAll('input[type="text"]').forEach(el => {
+        if (el.id !== 'numStrings' && el.id !== 'nutWidth' && el.id !== 'bridgeWidth' && el.id !== 'nutStringSpacing' && el.id !== 'bridgeStringSpacing' && 
+            !el.closest('#tuning') && !el.closest('#ilengths') && !el.closest('#igauges') ) { // Exclude dynamically generated inputs
+             el.addEventListener('change', onChange);
+        }
     });
 
+
     ff.setTuning('tuning', 'numStrings', onChange);
-    ff.setLengths('ilengths','numStrings', onChange); // Use ff.setLengths
-    ff.setGauges('igauges', 'numStrings', onChange);   // Use ff.setGauges
+    ff.setLengths('ilengths','numStrings', onChange);
+    ff.setGauges('igauges', 'numStrings', onChange);
+    
+    updateFormFromHash(); // This will populate from URL and apply initial consistency
+
+    // After updateFormFromHash and initial dynamic inputs are set up,
+    // ensure consistency for any remaining defaults before first draw.
+    const numStringsValInit = ff.getInt('numStrings');
+    if (document.getElementById('nutWidth').value && !document.getElementById('nutStringSpacing').value && numStringsValInit >=2) {
+        ff.updateSpacingFromWidth('nutWidth', 'nutStringSpacing', 'numStrings');
+    }
+    if (document.getElementById('bridgeWidth').value && !document.getElementById('bridgeStringSpacing').value && numStringsValInit >=2) {
+        ff.updateSpacingFromWidth('bridgeWidth', 'bridgeStringSpacing', 'numStrings');
+    }
     
     const diagramElement = document.getElementById('diagram');
     var diagramWidth = diagramElement ? diagramElement.offsetWidth : 600; // Default width
@@ -625,6 +728,14 @@ Fret  P.D.    Fret  P.D.
             It also makes the calculation easier.
         </dd>
 
+        <dt>string spacing at the nut (center-to-center)</dt>
+        <dd><input type="text" id="nutStringSpacing" value="" /></dd>
+        <dd class="help">
+            This setting defines the distance from the center of one string to the center of the adjacent string at the nut.
+            It is used to calculate the 'string width at the nut', and vice-versa.
+            If you change the number of strings, this spacing value will be used to recalculate a sensible nut width.
+        </dd>
+
         <dt>string width at the bridge</dt>
         <dd><input type="text" id="bridgeWidth" value="2.125" /></dd>
         <dd class="help">
@@ -635,6 +746,14 @@ Fret  P.D.    Fret  P.D.
             because I think that is what 
             you would feel as the width if you were playing an instrument with multiple scale lengths. 
             It also makes the calculation easier.
+        </dd>
+
+        <dt>string spacing at the bridge (center-to-center)</dt>
+        <dd><input type="text" id="bridgeStringSpacing" value="" /></dd>
+        <dd class="help">
+            This setting defines the distance from the center of one string to the center of the adjacent string at the bridge.
+            It is used to calculate the 'string width at the bridge', and vice-versa.
+            If you change the number of strings, this spacing value will be used to recalculate a sensible bridge width.
         </dd>
         
         <dt>string spacing</dt>

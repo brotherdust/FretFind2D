@@ -1246,6 +1246,67 @@ var ff = (function(){
                     input.addEventListener('change', change_callback);
                 });
             }
+        },
+        // New helper functions for string width/spacing conversion
+        updateWidthFromSpacing: function(spacingInputId, widthInputId, numStringsId) {
+            const spacingInput = document.getElementById(spacingInputId);
+            const widthInput = document.getElementById(widthInputId);
+            const numStrings = this.getInt(numStringsId); // Use this.getInt as it's part of ff object
+
+            if (!spacingInput || !widthInput || isNaN(numStrings) || numStrings < 2) {
+                // If numStrings < 2, width is effectively 0 or not applicable.
+                // Clear width if spacing is being driven and numStrings is invalid for spacing.
+                if (numStrings < 2 && widthInput) widthInput.value = (0).toFixed(this.getPrecision());
+                return;
+            }
+
+            const spacingValue = parseFloat(spacingInput.value);
+            // If spacingValue is invalid, don't attempt to calculate width from it.
+            // User might be clearing the field or typing.
+            if (isNaN(spacingValue) || spacingValue <= 0) {
+                 // Optionally clear widthInput if spacing is invalid, or let existing width persist
+                 // widthInput.value = ""; // Or some default or leave as is
+                return;
+            }
+
+            const newWidth = (numStrings - 1) * spacingValue;
+            
+            // Only update if the value has meaningfully changed
+            if (Math.abs(parseFloat(widthInput.value) - newWidth) > 0.00001 || widthInput.value === "") {
+                widthInput.value = newWidth.toFixed(this.getPrecision());
+            }
+        },
+        updateSpacingFromWidth: function(widthInputId, spacingInputId, numStringsId) {
+            const widthInput = document.getElementById(widthInputId);
+            const spacingInput = document.getElementById(spacingInputId);
+            const numStrings = this.getInt(numStringsId); // Use this.getInt
+
+            if (!widthInput || !spacingInput || isNaN(numStrings) || numStrings < 2) {
+                // If numStrings < 2, spacing is not applicable.
+                // Clear spacing if width is being driven and numStrings is invalid for spacing.
+                if (numStrings < 2 && spacingInput) spacingInput.value = ""; // Or (0).toFixed(this.getPrecision())
+                return;
+            }
+
+            const widthValue = parseFloat(widthInput.value);
+            // If widthValue is invalid, don't attempt to calculate spacing from it.
+            if (isNaN(widthValue) || widthValue < 0) { // width can be 0 if numStrings < 2
+                 // Optionally clear spacingInput if width is invalid
+                 // spacingInput.value = "";
+                return;
+            }
+            
+            // If numStrings < 2, width should be 0, so spacing is also 0 or not applicable.
+            if (numStrings < 2) {
+                spacingInput.value = (0).toFixed(this.getPrecision());
+                return;
+            }
+
+            const newSpacing = widthValue / (numStrings - 1);
+            
+            if (Math.abs(parseFloat(spacingInput.value) - newSpacing) > 0.00001 || spacingInput.value === "") {
+                spacingInput.value = newSpacing.toFixed(this.getPrecision());
+            }
         }
     };
 }());
