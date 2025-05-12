@@ -47,3 +47,5 @@ yarn-error.log*
 *.tmp
 *.temp
 *~
+
+node_modules/
