@@ -262,3 +262,42 @@ p.dev {
     font-size: 0.8rem;
   }
 }
+
+/* SVG Styles for FretFind2D Diagram */
+#diagram svg .fretfind-string {
+  stroke: rgb(0,0,0);
+  stroke-width: 0.75px;
+  fill: none;
+}
+
+#diagram svg .fretfind-edge {
+  stroke: rgb(0,0,255);
+  stroke-width: 0.75px;
+  fill: none;
+}
+
+#diagram svg .fretfind-meta {
+  stroke: rgb(221,221,221);
+  stroke-width: 0.5px; /* Thinnest */
+  fill: none;
+}
+
+#diagram svg .fretfind-pfret { /* Partial frets */
+  stroke: rgb(255,0,0);
+  stroke-linecap: round;
+  stroke-width: 0.75px;
+  fill: none;
+}
+
+#diagram svg .fretfind-ifret { /* Individual frets */
+  stroke: rgb(255,0,0);
+  stroke-linecap: round;
+  stroke-width: 1.5px; /* Thickest */
+  fill: none;
+}
+
+#diagram svg .fretfind-bbox { /* Bounding box */
+  stroke: rgb(0,0,0);
+  stroke-width: 0.5px;
+  fill: none;
+}

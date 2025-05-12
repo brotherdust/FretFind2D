@@ -505,94 +505,124 @@ var ff = (function(){
         return output.join('');
     };
     
-    var drawGuitar = function(drawSurface, guitar, displayOptions) { // Changed 'paper' to 'drawSurface'
-        var stringstyle = {stroke:'rgb(0,0,0)','stroke-width':'0.5px'}; // Halved
-        var edgestyle = {stroke:'rgb(0,0,255)','stroke-width':'0.5px'}; // Halved
-        var metastyle = {stroke:'rgb(221,221,221)','stroke-width':'0.5px'}; // Halved
-        var pfretstyle = {stroke:'rgb(255,0,0)','stroke-linecap':'round','stroke-width':'0.5px'}; // Halved
-        var ifretstyle = {stroke:'rgb(255,0,0)','stroke-linecap':'round','stroke-width':'1.5px'}; // Halved
-        var fretstyle = guitar.doPartials ? pfretstyle : ifretstyle;
+    var drawGuitar = function(drawSurface, guitar, displayOptions) {
+        if (!drawSurface) return;
+        drawSurface.clear();
+        // The 'all' group is not strictly necessary if not applying group transforms,
+        // but can be useful for organization or if group-level ops are added later.
+        // For now, elements will be added directly to drawSurface.
+        // var all = drawSurface.group(); 
 
-        if (!drawSurface) return; // Guard against undefined drawSurface
-        drawSurface.clear(); // Changed from paper.clear()
-        
-        var all = drawSurface.group(); // Changed from paper.set() to drawSurface.group()
-        
-        if(displayOptions.showStrings) {
-            var stringpath = '';
-            for (var i=0; i<guitar.strings.length; i++) {
-                stringpath += guitar.strings[i].toSVGD();
-            }
-            var strings = all.path(stringpath).attr(stringstyle); // Changed from paper.path to all.path (group)
-            // all.push(strings); // Not needed for SVG.js groups, elements are added directly
-        }
-        
-        if(displayOptions.showMetas) {
-            var metapath = '';
-            for (var i=0; i<guitar.meta.length; i++) {
-                metapath += guitar.meta[i].toSVGD();
-            }
-            var metas = all.path(metapath).attr(metastyle); // Changed from paper.path to all.path
-            // all.push(metas);
-        }
-        
-        if(displayOptions.showFretboardEdges) {
-            var edges = all.path(guitar.edge1.toSVGD() + guitar.edge2.toSVGD()).attr(edgestyle); // Changed from paper.path to all.path
-            // all.push(edges);
-        }
-        
-        var ends = all.path(guitar.nut.toSVGD() + guitar.bridge.toSVGD()).attr(pfretstyle); // Changed from paper.path to all.path
-        // all.push(ends);
-        
-        var fretpath = [];
-            for (var i=0; i<guitar.frets.length; i++) {
-                for (var j=0; j<guitar.frets[i].length; j++) {
-                    fretpath.push(guitar.frets[i][j].fret.toSVGD());
-                }
-            }
-            var frets = all.path(fretpath.join('')).attr(fretstyle); // Changed from paper.path to all.path
-            // all.push(frets);
+        // 1. Get model extents
+        var modelBBox = getExtents(guitar);
 
-        if(displayOptions.extendFrets) {
-            var extendedFretsPath = [];
-            for(var j=0; j<guitar.extendedFretEnds.length; j++) {
-                extendedFretsPath.push(guitar.extendedFretEnds[j].toSVGD());
-            }
-            var extendedFrets = all.path(extendedFretsPath.join('')).attr(fretstyle); // Changed from paper.path to all.path
-            // all.push(extendedFrets);
-        }
-
-        if(displayOptions.showBoundingBox) {
-            var bbox = getExtents(guitar);
-            all.rect(bbox.minx, bbox.miny, bbox.width, bbox.height).attr(stringstyle); // Changed from paper.rect and removed all.push
-        }
-
-        // calculate scale
-        var gw = getExtents(guitar).width;
-        var gh = getExtents(guitar).height;
-        
-        // Get the current container width
+        // 2. Get container pixel dimensions
         var containerWidth = $('#diagram').width();
         var containerHeight = $('#diagram').height();
-        
-        // Set drawSurface dimensions to match container
-        drawSurface.size(containerWidth, containerHeight); // Changed from paper.setSize
-        
-        // Set viewBox to scale and center the drawing
-        var bbox = getExtents(guitar);
-        // Add a 5% margin to the viewBox content, similar to the 0.9 scale factor
-        var marginX = bbox.width * 0.05; 
-        var marginY = bbox.height * 0.05;
-        drawSurface.viewbox(
-            bbox.minx - marginX, 
-            bbox.miny - marginY, 
-            bbox.width + 2 * marginX, 
-            bbox.height + 2 * marginY
-        );
-        // SVG.js defaults to preserveAspectRatio="xMidYMid meet" which is what we want.
+        drawSurface.size(containerWidth, containerHeight);
+        // Set viewBox to pixel dimensions for 1:1 mapping, if not default
+        drawSurface.viewbox(0, 0, containerWidth, containerHeight);
 
-        // No further scaling or translation of the 'all' group is needed,
-        // as the viewBox and preserveAspectRatio handle fitting and centering.
+        // 3. Calculate pixel scale and offsets
+        var pixelScale = 1.0;
+        // Ensure modelBBox.width and modelBBox.height are positive to avoid issues
+        if (modelBBox.width > 0.00001 && modelBBox.height > 0.00001) {
+            pixelScale = Math.min(containerWidth / modelBBox.width, containerHeight / modelBBox.height) * 0.90; // 10% margin
+        } else {
+            // Handle degenerate bounding box (e.g., single point, line) - perhaps draw nothing or a default size
+            pixelScale = 1.0; // Avoid division by zero or extreme scales
+        }
+
+
+        var scaledModelWidth = modelBBox.width * pixelScale;
+        var scaledModelHeight = modelBBox.height * pixelScale;
+
+        var pixelOffsetX = (containerWidth - scaledModelWidth) / 2;
+        var pixelOffsetY = (containerHeight - scaledModelHeight) / 2;
+
+        // 4. Helper to transform model point to pixel point
+        function modelToPixel(modelPoint) {
+            var px = (modelPoint.x - modelBBox.minx) * pixelScale + pixelOffsetX;
+            var py = (modelPoint.y - modelBBox.miny) * pixelScale + pixelOffsetY;
+            return { x: px, y: py };
+        }
+        
+        var fretClassName = guitar.doPartials ? 'fretfind-pfret' : 'fretfind-ifret';
+
+        // 5. Draw elements using transformed coordinates and CSS classes
+        if (displayOptions.showStrings) {
+            var stringpath = '';
+            for (var i = 0; i < guitar.strings.length; i++) {
+                var seg = guitar.strings[i];
+                var p1 = modelToPixel(seg.end1);
+                var p2 = modelToPixel(seg.end2);
+                stringpath += 'M' + p1.x + ' ' + p1.y + 'L' + p2.x + ' ' + p2.y;
+            }
+            if (stringpath) drawSurface.path(stringpath).addClass('fretfind-string');
+        }
+        
+        if (displayOptions.showMetas) {
+            var metapath = '';
+            for (var i = 0; i < guitar.meta.length; i++) {
+                var seg = guitar.meta[i];
+                var p1 = modelToPixel(seg.end1);
+                var p2 = modelToPixel(seg.end2);
+                metapath += 'M' + p1.x + ' ' + p1.y + 'L' + p2.x + ' ' + p2.y;
+            }
+            if (metapath) drawSurface.path(metapath).addClass('fretfind-meta');
+        }
+        
+        if (displayOptions.showFretboardEdges) {
+            var edge1p1 = modelToPixel(guitar.edge1.end1);
+            var edge1p2 = modelToPixel(guitar.edge1.end2);
+            var edge2p1 = modelToPixel(guitar.edge2.end1);
+            var edge2p2 = modelToPixel(guitar.edge2.end2);
+            var edgePath = 'M' + edge1p1.x + ' ' + edge1p1.y + 'L' + edge1p2.x + ' ' + edge1p2.y;
+            edgePath += 'M' + edge2p1.x + ' ' + edge2p1.y + 'L' + edge2p2.x + ' ' + edge2p2.y;
+            if (edgePath) drawSurface.path(edgePath).addClass('fretfind-edge');
+        }
+        
+        var nutP1 = modelToPixel(guitar.nut.end1);
+        var nutP2 = modelToPixel(guitar.nut.end2);
+        var bridgeP1 = modelToPixel(guitar.bridge.end1);
+        var bridgeP2 = modelToPixel(guitar.bridge.end2);
+        var endsPath = 'M' + nutP1.x + ' ' + nutP1.y + 'L' + nutP2.x + ' ' + nutP2.y;
+        endsPath += 'M' + bridgeP1.x + ' ' + bridgeP1.y + 'L' + bridgeP2.x + ' ' + bridgeP2.y;
+        if (endsPath) drawSurface.path(endsPath).addClass(fretClassName); // Frets style for nut/bridge
+        
+        var fretpath = [];
+        for (var i = 0; i < guitar.frets.length; i++) {
+            for (var j = 0; j < guitar.frets[i].length; j++) {
+                var seg = guitar.frets[i][j].fret;
+                var p1 = modelToPixel(seg.end1);
+                var p2 = modelToPixel(seg.end2);
+                // Only add path if points are different to avoid zero-length paths for non-partial frets
+                if (Math.abs(p1.x - p2.x) > 0.001 || Math.abs(p1.y - p2.y) > 0.001 || guitar.doPartials) {
+                     fretpath.push('M' + p1.x + ' ' + p1.y + 'L' + p2.x + ' ' + p2.y);
+                }
+            }
+        }
+        if (fretpath.length > 0) drawSurface.path(fretpath.join('')).addClass(fretClassName);
+
+        if (displayOptions.extendFrets) {
+            var extendedFretsPath = [];
+            for (var j = 0; j < guitar.extendedFretEnds.length; j++) {
+                var seg = guitar.extendedFretEnds[j];
+                var p1 = modelToPixel(seg.end1);
+                var p2 = modelToPixel(seg.end2);
+                 if (Math.abs(p1.x - p2.x) > 0.001 || Math.abs(p1.y - p2.y) > 0.001) {
+                    extendedFretsPath.push('M' + p1.x + ' ' + p1.y + 'L' + p2.x + ' ' + p2.y);
+                }
+            }
+            if (extendedFretsPath.length > 0) drawSurface.path(extendedFretsPath.join('')).addClass(fretClassName);
+        }
+
+        if (displayOptions.showBoundingBox) {
+            // Bounding box is drawn from pixelOffsetX, pixelOffsetY with scaledModelWidth, scaledModelHeight
+            drawSurface.rect(scaledModelWidth, scaledModelHeight)
+                       .move(pixelOffsetX, pixelOffsetY)
+                       .addClass('fretfind-bbox');
+        }
     };
     
     var getExtents = function(guitar) {
