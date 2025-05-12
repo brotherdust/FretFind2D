@@ -1072,7 +1072,7 @@ var ff = (function(){
         }
         var output = '';
         for (var i=0; i<strings; i++) {
-            output += 'string '+(i+1)+': <input type="text" value="'+(tunings[i] || 0)+'" /><br />';
+            output += 'string '+(i+1)+' <input type="text" value="'+(tunings[i] || 0)+'" /><br />';
         }
         $('#'+tuning_id).html(output);
         $('#'+tuning_id+' > input').change(change_callback);

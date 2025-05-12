@@ -49,7 +49,7 @@ var setLengths = function(length_id, string_count_id, change_callback, lengths) 
     }
     var output = '';
     for (var i=0; i<strings; i++) {
-        output += 'string '+(i+1)+': <input type="text" value="'+(lengths[i] || 25+(i*.5))+'" /><br />';
+        output += 'string '+(i+1)+' <input type="text" value="'+(lengths[i] || 25+(i*.5))+'" /><br />';
     }
     $('#'+length_id).html(output);
     $('#'+length_id+' > input').change(change_callback);
@@ -67,7 +67,7 @@ var setGauges = function(gauge_id, string_count_id, change_callback, gauges) {
     }
     var output = '';
     for (var i=0; i<strings; i++) {
-        output += 'string '+(i+1)+': <input type="text" value="'+(gauges[i] || 0.0)+'" /><br />';
+        output += 'string '+(i+1)+' <input type="text" value="'+(gauges[i] || 0.0)+'" /><br />';
     }
     $('#'+gauge_id).html(output);
     $('#'+gauge_id+' > input').change(change_callback);
@@ -569,7 +569,7 @@ Fret  P.D.    Fret  P.D.
                 <dd>
                     <div class="experimental">Danger: Experimental!!!</div>
                     <dl>
-                        <dt>string scale lengths:</dt>
+                        <dt>string scale lengths</dt>
                         <dd id="ilengths">
                         </dd>
                         <dd class="help">
@@ -658,7 +658,7 @@ Fret  P.D.    Fret  P.D.
                 <dt id="proportional">proportional</dt>
                 <dd>
                     <dl>
-                        <dt>string gauges:</dt>
+                        <dt>string gauges</dt>
                         <dd id="igauges">
                         </dd>
                     </dl>
