@@ -17,6 +17,19 @@ Based on the repository observation, the project has:
 - Received Docker configuration for easier local development
 - Maintained backward compatibility with existing designs
 - **jQuery and related plugins (Migrate, BBQ, browser-fix) were removed and code refactored to use vanilla JavaScript (May 2025).**
+- **JavaScript codebase refactored into smaller, more focused modules (May 2025):**
+    - `fretfind.js` and `fretfind_ui.js` were split into:
+        - `ff_setup.js`: Core namespace and utilities.
+        - `core/geometry.js`: Point and Segment classes.
+        - `core/scale.js`: Scale class and scale calculation.
+        - `core/fretboardCalculator.js`: Main fretboard calculation logic.
+        - `output/svgOutput.js`: SVG drawing and export.
+        - `output/pdfOutput.js`: PDF export.
+        - `output/dxfOutput.js`: DXF export.
+        - `output/textOutput.js`: HTML table, CSV, TAB export.
+        - `ui/domHelpers.js`: DOM interaction helpers.
+        - `ui/main.js`: Main UI orchestration and event handling.
+    - `fretfind.html` updated to load these new modules.
 
 ## Active Decisions and Considerations
 
@@ -25,6 +38,7 @@ Based on the repository observation, the project has:
 - Ensuring cross-browser compatibility while supporting modern APIs (DOM manipulation and event handling now use vanilla JavaScript).
 - Preserving URL parameter-based design sharing (URL parsing refactored to vanilla JavaScript).
 - Supporting various export formats to meet different user needs
+- **Enhanced modularity in JavaScript codebase** for better maintainability and separation of concerns.
 
 ### User Experience Focus
 - Maintaining the balance between powerful features and usability
@@ -33,9 +47,9 @@ Based on the repository observation, the project has:
 - Supporting a wide range of use cases from traditional to experimental designs
 
 ### Architectural Decisions
-- Continuing with the modular approach for maintainability
+- **Strengthened modular approach** with finer-grained JavaScript files.
 - Preserving the mathematical model that enables complex fretboard designs
-- Maintaining the separation between core calculation logic and UI
+- **Clearer separation between core logic, output generation, and UI interaction** due to new file structure.
 
 ### Operational Efficiency
 - **Token Usage Optimization**: Actively employing strategies to minimize input token usage during AI-assisted development. This includes concise communication, strategic tool use, and efficient file handling, as detailed in `.clinerules/token-management.md`.
@@ -184,6 +198,7 @@ The Sequential Thinking tool should be used frequently for complex problems. It 
 ### Known Challenges
 - Complex UI with many parameters that may overwhelm beginners
 - Codebase refactored from jQuery to vanilla JavaScript; thorough manual testing of all UI interactions (especially radio buttons and text input behavior) is pending.
+- **Codebase further refactored into multiple smaller JavaScript modules; testing of module interactions and overall application function is required.**
 - Limited visual guidance for novice luthiers on practical implementation
 - Some experimental features (like individual string scaling) still marked as experimental
 
@@ -193,3 +208,4 @@ The Sequential Thinking tool should be used frequently for complex problems. It 
 - Practical application of musical theory in software
 - Balance between powerful features and user-friendly interface
 - Successful refactoring of jQuery-dependent DOM manipulation, event handling, and URL parameter processing to vanilla JavaScript.
+- **Successful refactoring of monolithic JavaScript files into a more modular and maintainable structure.**

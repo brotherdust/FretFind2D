@@ -29,21 +29,34 @@
 ```
 FretFind2D/
 ├── src/
-│   ├── fretfind.html     # Main application HTML
-│   ├── fretfind.css      # Application styles
-│   ├── fretfind.js       # Core application logic
-│   └── libs/             # Third-party dependencies
+│   ├── fretfind.html            # Main application HTML
+│   ├── fretfind.css             # Application styles
+│   ├── ff_setup.js              # Core namespace and utilities
+│   ├── core/                    # Core logic modules
+│   │   ├── geometry.js
+│   │   ├── scale.js
+│   │   └── fretboardCalculator.js
+│   ├── output/                  # Output generation modules
+│   │   ├── svgOutput.js
+│   │   ├── pdfOutput.js
+│   │   ├── dxfOutput.js
+│   │   └── textOutput.js
+│   ├── ui/                      # User interface modules
+│   │   ├── domHelpers.js
+│   │   └── main.js
+│   └── libs/                    # Third-party dependencies
 │       ├── svg.min.js
 │       ├── FileSaver.min.js
 │       ├── base64.js
 │       ├── sprintf.js
 │       └── jspdf.js
-├── references/           # Reference implementations
-│   ├── fromInkscape/     # Python implementation for Inkscape
-│   └── fromModevia/      # PHP implementation
-├── test/                 # Test files
-└── docker/               # Docker configuration for local development
+├── references/                  # Reference implementations
+│   ├── fromInkscape/            # Python implementation for Inkscape
+│   └── fromModevia/             # PHP implementation
+├── test/                        # Test files
+└── docker/                      # Docker configuration for local development
 ```
+*Note: `fretfind.js` and `fretfind_ui.js` were removed and their contents refactored into the new modular structure above (May 2025).*
 
 ### Local Development Setup
 - Local web server required for file generation features

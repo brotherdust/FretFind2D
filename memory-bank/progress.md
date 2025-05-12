@@ -78,6 +78,7 @@ This section outlines planned enhancements and future development directions, al
         - [x] Remove jQuery dependency entirely (Completed 5/11/2025, previously 3.7.1)
         - [ ] Update other outdated dependencies
     - [x] Refactor code to use modern JavaScript patterns (jQuery related parts completed 5/11/2025)
+    - [x] Refactor JavaScript codebase into smaller, more focused modules (Completed 5/12/2025)
 - [ ] **User Experience (UI/UX) Enhancements:**
     - [ ] Modernize the user interface and implement responsive design for better mobile/tablet usability
     - [ ] Improve overall visual appeal and ease of understanding for the fretboard visualization
@@ -113,12 +114,13 @@ This section outlines planned enhancements and future development directions, al
 
 ### Architectural Decisions
 - **Client-Side Processing**: The decision to keep all processing client-side has proven effective, enabling offline usage and eliminating server dependencies.
-- **Modular Design**: The separation of geometric primitives, fretboard modeling, and rendering systems has maintained code clarity.
+- **Modular Design**: The separation of geometric primitives, fretboard modeling, and rendering systems has maintained code clarity. This was further enhanced by refactoring into multiple JS files (May 2025).
 - **URL Parameter System**: The approach of encoding designs in URLs has successfully enabled design sharing without server storage.
 
 ### Technical Choices
 - **SVG.js for Visualization**: Replaced Raphael.js (5/11/2025) for vector graphics, offering modern features. (Previously Raphael.js)
 - **jQuery**: Removed entirely and replaced with vanilla JavaScript (as of 5/11/2025). Previously jQuery 3.7.1.
+- **JavaScript Modularity**: Refactored monolithic `fretfind.js` and `fretfind_ui.js` into a set of smaller, more focused modules under `src/core/`, `src/output/`, and `src/ui/` directories, plus a setup file `src/ff_setup.js` (May 2025). This improves maintainability and clarity.
 - **Output Format Diversity**: The decision to support multiple output formats has successfully served diverse user needs.
 
 ### User Experience Decisions
@@ -137,6 +139,6 @@ Should development continue, these are the top recommended priorities, focusing 
 
 1.  **Migrate Core Dependencies**: Address technical debt by reviewing/updating remaining outdated libraries (Raphael.js replaced, jQuery removed).
 2.  **Modernize UI & Implement Responsive Design**: Improve the user interface for current standards and ensure usability across devices.
-3.  **Refactor Code to Modern JavaScript Patterns**: Continue enhancing code maintainability and performance (jQuery-related refactoring complete).
+3.  **Refactor Code to Modern JavaScript Patterns**: Continue enhancing code maintainability and performance (jQuery-related refactoring complete, initial modularization complete).
 4.  **Improve Fretboard Visualization**: Make the visual output more appealing and easier to understand.
 5.  **Support Fractional Inches**: Add support for fractional inch measurements for input and output, a key UX improvement for many users.
