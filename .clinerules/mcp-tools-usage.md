@@ -4,7 +4,7 @@
 These guidelines outline best practices for working with MCP (Model Context Protocol) servers in the project, with specific focus on Git MCP for version control, Context7 for documentation retrieval, and Sequential Thinking for structured problem-solving. All MCP tool usage should also be mindful of token efficiency, as detailed in `.clinerules/token-management.md`.
 
 ## Git MCP usage
-- Use Git MCP for all version control operations rather than direct shell commands
+- Use Git MCP for all version control operations rather than direct shell commands, ensuring the `repo_path` parameter is set to `/workspace`.
 - Commits should be atomic (focused on a single logical change)
 - Commit messages must be concise to fit within de-facto length limits (50 characters)
 - Follow the standard workflow: git_status → git_add → git_diff_staged → git_commit

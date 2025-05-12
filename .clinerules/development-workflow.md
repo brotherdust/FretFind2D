@@ -15,7 +15,7 @@ These guidelines define the preferred development workflow for this project, foc
 - Document key insights from the thinking process in code comments
 
 ## Version control practices
-- ALWAYS use the git MCP tools for all version control operations
+- ALWAYS use the git MCP tools for all version control operations, ensuring the `repo_path` parameter is set to `/workspace`.
 - Commit changes EVERY time a meaningful change is made to the codebase
 - Avoid direct shell commands for git operations - use the git MCP tools exclusively
 - Make atomic commits (focused on a single logical change)
