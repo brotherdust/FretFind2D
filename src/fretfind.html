@@ -28,7 +28,7 @@
 <script type="text/javascript" src="libs/jquery-migrate-3.4.1.min.js"><!-- --></script>
 <script type="text/javascript" src="libs/jquery-browser-fix.js"><!-- --></script>
 <script type="text/javascript" src="libs/jquery.ba-bbq.min.js"><!-- --></script>
-<script type="text/javascript" src="libs/raphael-min.js"><!-- --></script>
+<script type="text/javascript" src="libs/svg.min.js"><!-- --></script> <!-- Replaced Raphael.js with SVG.js -->
 <script type="text/javascript" src="libs/FileSaver.min.js"><!-- --></script>
 <script type="text/javascript" src="libs/base64.js"><!-- --></script>
 <script type="text/javascript" src="libs/sprintf.js"><!-- --></script>
@@ -299,14 +299,14 @@ var getLink = function() {
 };
 
 //surface for drawing fretboard
-var paper;
+var drawSurface; // Changed from 'paper' to 'drawSurface' for SVG.js
 
 var processChanges = false;
 var onChange = function() {
     if (processChanges) {
         var guitar = getGuitar();
         guitar = ff.fretGuitar(guitar);
-        ff.drawGuitar(paper, guitar, getDisplayOptions());
+        ff.drawGuitar(drawSurface, guitar, getDisplayOptions()); // Changed from 'paper'
         $('#tables').html(ff.getTable(guitar));
         $('#bookmark').attr('href', getLink());
     }
@@ -347,7 +347,8 @@ $(document).ready(function() {
     var diagramWidth = $('#diagram').width();
     var diagramHeight = Math.max(500, window.innerHeight * 0.6);
     $('#diagram').css('height', diagramHeight + 'px');
-    paper = Raphael('diagram', diagramWidth, diagramHeight);
+    // paper = Raphael('diagram', diagramWidth, diagramHeight); // Raphael initialization removed
+    drawSurface = SVG().addTo('#diagram').size(diagramWidth, diagramHeight); // SVG.js initialization
     
     // Handle window resize
     $(window).resize(function() {

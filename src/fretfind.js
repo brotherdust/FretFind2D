@@ -505,25 +505,26 @@ var ff = (function(){
         return output.join('');
     };
     
-    var drawGuitar = function(paper, guitar, displayOptions) {
-        var stringstyle = {stroke:'rgb(0,0,0)','stroke-width':'1px'};
-        var edgestyle = {stroke:'rgb(0,0,255)','stroke-width':'1px'};
-        var metastyle = {stroke:'rgb(221,221,221)','stroke-width':'1px'};
-        var pfretstyle = {stroke:'rgb(255,0,0)','stroke-linecap':'round','stroke-width':'1px'};
-        var ifretstyle = {stroke:'rgb(255,0,0)','stroke-linecap':'round','stroke-width':'3px'};
+    var drawGuitar = function(drawSurface, guitar, displayOptions) { // Changed 'paper' to 'drawSurface'
+        var stringstyle = {stroke:'rgb(0,0,0)','stroke-width':'0.5px'}; // Halved
+        var edgestyle = {stroke:'rgb(0,0,255)','stroke-width':'0.5px'}; // Halved
+        var metastyle = {stroke:'rgb(221,221,221)','stroke-width':'0.5px'}; // Halved
+        var pfretstyle = {stroke:'rgb(255,0,0)','stroke-linecap':'round','stroke-width':'0.5px'}; // Halved
+        var ifretstyle = {stroke:'rgb(255,0,0)','stroke-linecap':'round','stroke-width':'1.5px'}; // Halved
         var fretstyle = guitar.doPartials ? pfretstyle : ifretstyle;
 
-        paper.clear();
+        if (!drawSurface) return; // Guard against undefined drawSurface
+        drawSurface.clear(); // Changed from paper.clear()
         
-        var all = paper.set();
+        var all = drawSurface.group(); // Changed from paper.set() to drawSurface.group()
         
         if(displayOptions.showStrings) {
             var stringpath = '';
             for (var i=0; i<guitar.strings.length; i++) {
                 stringpath += guitar.strings[i].toSVGD();
             }
-            var strings = paper.path(stringpath).attr(stringstyle);
-            all.push(strings);
+            var strings = all.path(stringpath).attr(stringstyle); // Changed from paper.path to all.path (group)
+            // all.push(strings); // Not needed for SVG.js groups, elements are added directly
         }
         
         if(displayOptions.showMetas) {
@@ -531,39 +532,39 @@ var ff = (function(){
             for (var i=0; i<guitar.meta.length; i++) {
                 metapath += guitar.meta[i].toSVGD();
             }
-            var metas = paper.path(metapath).attr(metastyle);
-            all.push(metas);
+            var metas = all.path(metapath).attr(metastyle); // Changed from paper.path to all.path
+            // all.push(metas);
         }
         
         if(displayOptions.showFretboardEdges) {
-            var edges = paper.path(guitar.edge1.toSVGD() + guitar.edge2.toSVGD()).attr(edgestyle);
-            all.push(edges);
+            var edges = all.path(guitar.edge1.toSVGD() + guitar.edge2.toSVGD()).attr(edgestyle); // Changed from paper.path to all.path
+            // all.push(edges);
         }
         
-        var ends = paper.path(guitar.nut.toSVGD() + guitar.bridge.toSVGD()).attr(pfretstyle);
-        all.push(ends);
+        var ends = all.path(guitar.nut.toSVGD() + guitar.bridge.toSVGD()).attr(pfretstyle); // Changed from paper.path to all.path
+        // all.push(ends);
         
         var fretpath = [];
-        for (var i=0; i<guitar.frets.length; i++) {
-            for (var j=0; j<guitar.frets[i].length; j++) {
-                fretpath.push(guitar.frets[i][j].fret.toSVGD());
+            for (var i=0; i<guitar.frets.length; i++) {
+                for (var j=0; j<guitar.frets[i].length; j++) {
+                    fretpath.push(guitar.frets[i][j].fret.toSVGD());
+                }
             }
-        }
-        var frets = paper.path(fretpath.join('')).attr(fretstyle);
-        all.push(frets);
+            var frets = all.path(fretpath.join('')).attr(fretstyle); // Changed from paper.path to all.path
+            // all.push(frets);
 
         if(displayOptions.extendFrets) {
             var extendedFretsPath = [];
             for(var j=0; j<guitar.extendedFretEnds.length; j++) {
                 extendedFretsPath.push(guitar.extendedFretEnds[j].toSVGD());
             }
-            var extendedFrets = paper.path(extendedFretsPath.join('')).attr(fretstyle);
-            all.push(extendedFrets);
+            var extendedFrets = all.path(extendedFretsPath.join('')).attr(fretstyle); // Changed from paper.path to all.path
+            // all.push(extendedFrets);
         }
 
         if(displayOptions.showBoundingBox) {
             var bbox = getExtents(guitar);
-            all.push(paper.rect(bbox.minx, bbox.miny, bbox.width, bbox.height).attr(stringstyle));
+            all.rect(bbox.minx, bbox.miny, bbox.width, bbox.height).attr(stringstyle); // Changed from paper.rect and removed all.push
         }
 
         // calculate scale
@@ -574,22 +575,24 @@ var ff = (function(){
         var containerWidth = $('#diagram').width();
         var containerHeight = $('#diagram').height();
         
-        // Set paper dimensions to match container
-        paper.setSize(containerWidth, containerHeight);
+        // Set drawSurface dimensions to match container
+        drawSurface.size(containerWidth, containerHeight); // Changed from paper.setSize
         
-        var pw = containerWidth;
-        var ph = containerHeight;
-        
-        var scale = Math.min(pw/gw, ph/gh) * 0.9; // 0.9 to add some margin
-        all.scale(scale, scale, 0, 0);
-        
-        // Center the drawing in the available space
-        var scaledWidth = gw * scale;
-        var scaledHeight = gh * scale;
-        var translateX = (pw - scaledWidth) / 2;
-        var translateY = (ph - scaledHeight) / 2;
-        
-        all.translate(translateX, translateY);
+        // Set viewBox to scale and center the drawing
+        var bbox = getExtents(guitar);
+        // Add a 5% margin to the viewBox content, similar to the 0.9 scale factor
+        var marginX = bbox.width * 0.05; 
+        var marginY = bbox.height * 0.05;
+        drawSurface.viewbox(
+            bbox.minx - marginX, 
+            bbox.miny - marginY, 
+            bbox.width + 2 * marginX, 
+            bbox.height + 2 * marginY
+        );
+        // SVG.js defaults to preserveAspectRatio="xMidYMid meet" which is what we want.
+
+        // No further scaling or translation of the 'all' group is needed,
+        // as the viewBox and preserveAspectRatio handle fitting and centering.
     };
     
     var getExtents = function(guitar) {

@@ -6,11 +6,12 @@
 - **HTML5**: Basic structure and form elements
 - **CSS**: Styling and layout
 - **JavaScript**: Core application logic and calculations
-- **jQuery**: DOM manipulation and event handling (version 1.4.2)
+- **jQuery**: DOM manipulation and event handling (version 3.7.1)
+- **jQuery Migrate**: Assists with migrating older jQuery code (version 3.4.1)
 - **jQuery BBQ**: URL parameter handling for shareable designs
 
 ### Visualization Libraries
-- **Raphael.js**: Vector graphics library for in-browser visualization
+- **SVG.js**: Vector graphics library for in-browser visualization (version 3.2.0)
 - **jsPDF**: PDF generation library
 
 ### File Generation
@@ -35,9 +36,11 @@ FretFind2D/
 │   ├── fretfind.css      # Application styles
 │   ├── fretfind.js       # Core application logic
 │   └── libs/             # Third-party dependencies
-│       ├── jquery-1.4.2.min.js
+│       ├── jquery-3.7.1.min.js
+│       ├── jquery-migrate-3.4.1.min.js
+│       ├── jquery-browser-fix.js
 │       ├── jquery.ba-bbq.min.js
-│       ├── raphael-min.js
+│       ├── svg.min.js
 │       ├── FileSaver.min.js
 │       ├── base64.js
 │       ├── sprintf.js
@@ -85,9 +88,10 @@ FretFind2D/
 ### Third-Party Libraries
 | Library      | Version | Purpose                             | License    |
 |--------------|---------|-------------------------------------|------------|
-| jQuery       | 1.4.2   | DOM manipulation                    | MIT        |
+| jQuery       | 3.7.1   | DOM manipulation                    | MIT        |
+| jQuery Migrate | 3.4.1 | jQuery version migration aid        | MIT        |
 | jQuery BBQ   | -       | URL parameter handling              | MIT/GPL    |
-| Raphael.js   | -       | Vector graphics                     | MIT        |
+| SVG.js       | 3.2.0   | Vector graphics / Interactive visualization | MIT        |
 | FileSaver.js | -       | Client-side file saving             | MIT        |
 | jsPDF        | -       | PDF generation                      | MIT        |
 | sprintf.js   | -       | String formatting                   | BSD-3      |

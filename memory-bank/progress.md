@@ -73,9 +73,9 @@ This section outlines planned enhancements and future development directions, al
 ### Short Term Goals: Technical Debt & Core UX Improvements
 - [x] Implement AI-assisted coding to speed development (Completed)
 - [ ] **Technical Modernization:**
-    - [ ] Migrate core dependencies:
-        - [ ] Migrate from Raphael.js (no longer maintained) to a modern SVG library (e.g., SVG.js)
-        - [ ] Update jQuery to the latest version (currently on 1.4.2, needs update)
+    - [x] Migrate core dependencies: (SVG.js and jQuery updated 5/11/2025)
+        - [x] Migrate from Raphael.js (no longer maintained) to a modern SVG library (SVG.js 3.2.0) (Completed 5/11/2025)
+        - [x] Update jQuery to the latest version (3.7.1) (Completed 5/11/2025, previously 1.4.2)
         - [ ] Update other outdated dependencies
     - [ ] Refactor code to use modern JavaScript patterns
 - [ ] **User Experience (UI/UX) Enhancements:**
@@ -117,8 +117,8 @@ This section outlines planned enhancements and future development directions, al
 - **URL Parameter System**: The approach of encoding designs in URLs has successfully enabled design sharing without server storage.
 
 ### Technical Choices
-- **Raphael.js for Visualization**: Has proven effective for vector graphics but could be replaced with modern alternatives.
-- **jQuery**: Was appropriate at the time of development but could be updated or replaced.
+- **SVG.js for Visualization**: Replaced Raphael.js (5/11/2025) for vector graphics, offering modern features. (Previously Raphael.js)
+- **jQuery**: Updated to modern version (3.7.1) for improved compatibility and features (as of 5/11/2025, previously 1.4.2).
 - **Output Format Diversity**: The decision to support multiple output formats has successfully served diverse user needs.
 
 ### User Experience Decisions

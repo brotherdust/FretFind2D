@@ -40,7 +40,7 @@ Multiple rendering systems for different output formats:
 - TAB delimited output via `getTAB`
 
 ### Interactive Visualization
-- Real-time rendering using Raphael.js
+- Real-time rendering using SVG.js
 - `drawGuitar`: Main function for displaying fretboard in browser
 
 ## Data Flow Patterns
