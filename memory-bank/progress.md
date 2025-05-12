@@ -2,7 +2,7 @@
 
 ## Current Status
 
-FretFind2D is a fully functional application that successfully fulfills its core purpose of designing fretboards for string instruments with support for multi-scale and microtonal designs. The project is in a mature state with all planned features implemented and working correctly.
+FretFind2D is a fully functional application that successfully fulfills its core purpose of designing fretboards for string instruments with support for multi-scale and microtonal designs. The project is in a mature state with all planned features implemented and working correctly. Recent efforts have focused on formalizing development processes, including the establishment of detailed project guidelines (`.clinerules/`) and a comprehensive Memory Bank system to ensure consistent and well-documented contributions.
 
 ### What Works
 
@@ -38,6 +38,11 @@ FretFind2D is a fully functional application that successfully fulfills its core
 - ✅ Sequential Thinking MCP server for structured problem-solving
 - ✅ Updated custom commands for MCP tools usage
 - ✅ Standardized workflow for library documentation retrieval
+- ✅ Docker configuration for consistent local development environment
+
+#### Project Management & Process
+- ✅ Establishment of comprehensive project guidelines (`.clinerules/`) covering commit standards, MCP tool usage, development workflows, and progress tracking.
+- ✅ Implementation of a structured Memory Bank system for maintaining project knowledge and context.
 
 ### Known Issues
 
@@ -95,6 +100,11 @@ While the core application is complete, there are several potential enhancements
 - **In-Context Help**: The approach of providing detailed help alongside form elements has effectively supported users.
 - **Real-Time Updates**: Immediate visualization updates on parameter changes has been essential for the interactive design process.
 - **Toggleable Display Options**: Allowing users to control visualization elements has proven useful for different use cases.
+
+### Development Methodology Decisions
+- **Structured Guidelines (`.clinerules/`)**: Adoption of explicit rules for commits, tool usage, and workflows to ensure consistency and quality in ongoing development and maintenance.
+- **Memory Bank System**: Implementation of a formal Memory Bank to capture and persist project knowledge, crucial for long-term maintainability and onboarding, especially in environments with context resets.
+- **MCP Tool Integration**: Leveraging Model Context Protocol servers for Git, documentation (Context7), and structured problem-solving (Sequential Thinking) to streamline development tasks and improve efficiency.
 
 ## Next Development Priorities
 
