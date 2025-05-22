@@ -21,11 +21,13 @@
 (function(ff) {
     'use strict';
 
-    ff.getAlt = function(id) {
-        const element = document.getElementById(id);
-        if (element) {
-            const selectedDt = element.querySelector('dt.selected-alt');
-            return selectedDt ? selectedDt.id : null;
+    // Helper function to get the active tab ID within an alternative container
+    ff.getAlt = function(containerId) {
+        const container = document.getElementById(containerId);
+        if (container) {
+            // Query for the button with data-state="active"
+            const selectedButton = container.querySelector('.tab-button[data-state="active"]');
+            return selectedButton ? selectedButton.id : null;
         }
         return null;
     };
@@ -40,21 +42,13 @@
         return element ? parseFloat(element.value) : NaN;
     };
 
-    // ff.getInt is already in ff_setup.js, but it's used by other functions here.
-    // Ensure it's available or re-declare if ff_setup.js isn't loaded first (though it should be).
-    // For safety, let's assume ff.getInt is available from ff_setup.js.
-    // If it were not, it would be:
-    // ff.getInt = function(id) {
-    //     const element = document.getElementById(id);
-    //     return element ? parseInt(element.value, 10) : NaN;
-    // };
-
+    // ff.getInt is assumed to be available from ff_setup.js
 
     ff.getTuning = function(id) {
         var tunings = [];
         const parentElement = document.getElementById(id);
         if (parentElement) {
-            parentElement.querySelectorAll('input').forEach(item => {
+            parentElement.querySelectorAll('input[type="text"]').forEach(item => {
                 tunings.push(parseInt(item.value, 10));
             });
         }
@@ -63,21 +57,36 @@
 
     ff.setTuning = function(tuning_id, string_count_id, change_callback, tunings) {
         var strings = ff.getInt(string_count_id);
-        if (isNaN(strings) || strings < 0) strings = 0; // Handle invalid string count
+        if (isNaN(strings) || strings < 0) strings = 0;
 
         if (typeof tunings === 'undefined' || !Array.isArray(tunings)) {
             tunings = ff.getTuning(tuning_id);
         }
-        var output = '';
-        for (var i = 0; i < strings; i++) {
-            output += 'string ' + (i + 1) + ' <input type="text" value="' + (tunings[i] || 0) + '" /><br />';
-        }
+        
         const tuningElement = document.getElementById(tuning_id);
         if (tuningElement) {
-            tuningElement.innerHTML = output;
-            tuningElement.querySelectorAll('input').forEach(input => {
+            tuningElement.innerHTML = ''; // Clear previous inputs
+            for (var i = 0; i < strings; i++) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'mb-2 flex items-center';
+                
+                const label = document.createElement('label');
+                label.htmlFor = `tuning-string-${i+1}`;
+                label.textContent = `String ${i + 1}:`;
+                label.className = 'mr-2 text-sm text-muted-foreground';
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = `tuning-string-${i+1}`;
+                input.value = (tunings[i] || 0);
+                // Using more generic input classes consistent with shadcn/ui
+                input.className = 'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
                 input.addEventListener('change', change_callback);
-            });
+
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                tuningElement.appendChild(wrapper);
+            }
         }
     };
 
@@ -85,7 +94,7 @@
         var lengths = [];
         const parentElement = document.getElementById(id);
         if (parentElement) {
-            parentElement.querySelectorAll('input').forEach(item => {
+            parentElement.querySelectorAll('input[type="text"]').forEach(item => {
                 lengths.push(parseFloat(item.value));
             });
         }
@@ -99,18 +108,31 @@
         if (typeof lengths === 'undefined' || !Array.isArray(lengths)) {
             lengths = ff.getLengths(length_id);
         }
-        var output = '';
-        for (var i = 0; i < strings; i++) {
-            // Default length calculation: 25 for first string, increasing by 0.5 for subsequent
-            var defaultLength = 25 + (i * 0.5);
-            output += 'string ' + (i + 1) + ' <input type="text" value="' + (lengths[i] !== undefined && !isNaN(lengths[i]) ? lengths[i] : defaultLength) + '" /><br />';
-        }
+        
         const lengthElement = document.getElementById(length_id);
         if (lengthElement) {
-            lengthElement.innerHTML = output;
-            lengthElement.querySelectorAll('input').forEach(input => {
+            lengthElement.innerHTML = ''; // Clear previous inputs
+            for (var i = 0; i < strings; i++) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'mb-2 flex items-center';
+
+                const label = document.createElement('label');
+                label.htmlFor = `length-string-${i+1}`;
+                label.textContent = `String ${i + 1}:`;
+                label.className = 'mr-2 text-sm text-muted-foreground';
+
+                var defaultLength = 25 + (i * 0.5); // Original default logic
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = `length-string-${i+1}`;
+                input.value = (lengths[i] !== undefined && !isNaN(lengths[i]) ? lengths[i] : defaultLength);
+                input.className = 'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
                 input.addEventListener('change', change_callback);
-            });
+
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                lengthElement.appendChild(wrapper);
+            }
         }
     };
 
@@ -118,7 +140,7 @@
         var gauges = [];
         const parentElement = document.getElementById(id);
         if (parentElement) {
-            parentElement.querySelectorAll('input').forEach(item => {
+            parentElement.querySelectorAll('input[type="text"]').forEach(item => {
                 gauges.push(parseFloat(item.value));
             });
         }
@@ -132,46 +154,67 @@
         if (typeof gauges === 'undefined' || !Array.isArray(gauges)) {
             gauges = ff.getGauges(gauge_id);
         }
-        var output = '';
-        for (var i = 0; i < strings; i++) {
-            output += 'string ' + (i + 1) + ' <input type="text" value="' + (gauges[i] !== undefined && !isNaN(gauges[i]) ? gauges[i] : 0.0) + '" /><br />';
-        }
+        
         const gaugeElement = document.getElementById(gauge_id);
         if (gaugeElement) {
-            gaugeElement.innerHTML = output;
-            gaugeElement.querySelectorAll('input').forEach(input => {
+            gaugeElement.innerHTML = ''; // Clear previous inputs
+            for (var i = 0; i < strings; i++) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'mb-2 flex items-center';
+
+                const label = document.createElement('label');
+                label.htmlFor = `gauge-string-${i+1}`;
+                label.textContent = `String ${i + 1}:`;
+                label.className = 'mr-2 text-sm text-muted-foreground';
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = `gauge-string-${i+1}`;
+                input.value = (gauges[i] !== undefined && !isNaN(gauges[i]) ? gauges[i] : 0.0);
+                input.className = 'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50';
                 input.addEventListener('change', change_callback);
-            });
+
+                wrapper.appendChild(label);
+                wrapper.appendChild(input);
+                gaugeElement.appendChild(wrapper);
+            }
         }
     };
     
     ff.initHelp = function(form_id) {
         const form = document.getElementById(form_id);
         if (form) {
-            form.querySelectorAll('dd.help').forEach(helpDd => {
-                const dtElement = helpDd.previousElementSibling;
-                // Ensure previousElementSibling is a DT and there's another DT before that one.
-                if (dtElement && dtElement.tagName === 'DT' && dtElement.previousElementSibling && dtElement.previousElementSibling.tagName === 'DT') {
-                    const targetDt = dtElement.previousElementSibling;
+            const helpDivs = form.querySelectorAll('.help');
+            helpDivs.forEach((helpDiv, index) => {
+                const helpId = helpDiv.id || `help-content-${index}`;
+                helpDiv.id = helpId;
+                helpDiv.style.display = 'none'; 
 
-                    const helpLink = document.createElement('a');
-                    helpLink.className = 'help';
-                    helpLink.href = '#';
-                    helpLink.textContent = '?';
-                    helpLink.setAttribute('role', 'button'); // Accessibility
-                    helpLink.setAttribute('aria-expanded', 'false'); // Initial state
-                    helpLink.setAttribute('aria-controls', helpDd.id || (helpDd.id = 'help-' + Math.random().toString(36).substr(2, 9)));
+                let targetParent = helpDiv.closest('.mb-4, .mt-4, .mb-6'); // Common parent containers for form field groups
+                let targetElement = null;
+                if (targetParent) {
+                     targetElement = targetParent.querySelector('label, h2, h3');
+                } else { // Fallback if not in a typical group
+                    targetElement = helpDiv.previousElementSibling;
+                }
 
 
-                    targetDt.appendChild(document.createTextNode(' ['));
-                    targetDt.appendChild(helpLink);
-                    targetDt.appendChild(document.createTextNode(']'));
+                if (targetElement) {
+                    const helpLink = document.createElement('button');
+                    helpLink.className = 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary underline-offset-4 hover:underline h-auto p-0 ml-1';
+                    helpLink.textContent = '[?]'; // More explicit than just '?'
+                    helpLink.setAttribute('type', 'button'); 
+                    helpLink.setAttribute('aria-expanded', 'false');
+                    helpLink.setAttribute('aria-controls', helpId);
 
+                    targetElement.classList.add('inline-flex', 'items-center'); 
+                    targetElement.appendChild(helpLink);
+                    
                     helpLink.addEventListener('click', function(event) {
                         event.preventDefault();
-                        const isExpanded = helpDd.style.display === 'block';
-                        helpDd.style.display = isExpanded ? 'none' : 'block';
-                        helpLink.setAttribute('aria-expanded', !isExpanded);
+                        const isExpanded = helpDiv.style.display === 'block';
+                        helpDiv.style.display = isExpanded ? 'none' : 'block';
+                        helpLink.setAttribute('aria-expanded', String(!isExpanded));
                     });
                 }
             });
@@ -181,55 +224,60 @@
     ff.initAlternatives = function(form_id, change_callback) {
         const form = document.getElementById(form_id);
         if (form) {
-            form.querySelectorAll('dl.alternative').forEach(dlAlternative => {
-                const dts = Array.from(dlAlternative.children).filter(child => child.tagName === 'DT');
-                const dds = Array.from(dlAlternative.children).filter(child => child.tagName === 'DD');
+            form.querySelectorAll('div.alternative').forEach(altContainer => {
+                const tabButtons = altContainer.querySelectorAll('.tab-button');
+                const tabContents = Array.from(altContainer.querySelectorAll('.tab-content'));
 
-                dts.forEach(dtElement => {
-                    let altDd = dtElement.nextElementSibling;
-                    while(altDd && altDd.tagName !== 'DD') { // Find the associated DD
-                        altDd = altDd.nextElementSibling;
-                    }
+                if (tabButtons.length === 0 || tabContents.length === 0) return;
 
-                    if (altDd && altDd.tagName === 'DD') {
-                        dtElement.setAttribute('role', 'tab'); // Accessibility
-                        dtElement.setAttribute('aria-selected', 'false');
-                        if (altDd.id) dtElement.setAttribute('aria-controls', altDd.id);
-                        else altDd.id = 'alt-dd-' + Math.random().toString(36).substr(2,9);
-                        dtElement.setAttribute('aria-controls', altDd.id);
+                tabButtons.forEach((button, index) => {
+                    const contentPane = tabContents[index];
+                    if (!contentPane) return;
 
+                    button.setAttribute('role', 'tab');
+                    button.setAttribute('data-state', 'inactive'); // Initialize all to inactive
+                    button.setAttribute('aria-selected', 'false');
+                    button.setAttribute('aria-controls', contentPane.id || (contentPane.id = `tab-content-${altContainer.id}-${button.id || index}`));
+                    contentPane.setAttribute('role', 'tabpanel');
+                    contentPane.setAttribute('aria-labelledby', button.id);
+                    contentPane.classList.add('hidden'); // Ensure all content panes are initially hidden
 
-                        dtElement.addEventListener('click', function() {
-                            dts.forEach(d => {
-                                d.classList.remove('selected-alt');
-                                d.setAttribute('aria-selected', 'false');
-                            });
-                            this.classList.add('selected-alt');
-                            this.setAttribute('aria-selected', 'true');
-                            
-                            dds.forEach(dd => {
-                                dd.style.display = 'none';
-                                dd.setAttribute('aria-hidden', 'true');
-                            });
-                            altDd.style.display = 'block';
-                            altDd.setAttribute('aria-hidden', 'false');
-                            
-                            if (typeof change_callback === 'function') {
-                                change_callback();
-                            }
+                    button.addEventListener('click', function() {
+                        // Deactivate all buttons and hide all panes in this group
+                        tabButtons.forEach(btn => {
+                            btn.setAttribute('data-state', 'inactive');
+                            btn.setAttribute('aria-selected', 'false');
                         });
+                        tabContents.forEach(pane => {
+                            pane.classList.add('hidden');
+                            pane.setAttribute('aria-hidden', 'true');
+                        });
+
+                        // Activate clicked button and show its pane
+                        this.setAttribute('data-state', 'active');
+                        this.setAttribute('aria-selected', 'true');
+                        
+                        contentPane.classList.remove('hidden');
+                        contentPane.setAttribute('aria-hidden', 'false');
+                        
+                        if (typeof change_callback === 'function') {
+                            change_callback();
+                        }
+                    });
+                });
+                
+                // Initialize the first tab as active, if any
+                const firstButton = tabButtons[0];
+                if (firstButton) {
+                    // Manually set first tab to active and show its content
+                    firstButton.setAttribute('data-state', 'active');
+                    firstButton.setAttribute('aria-selected', 'true');
+                    const firstContentPane = tabContents[0];
+                    if (firstContentPane) {
+                        firstContentPane.classList.remove('hidden');
+                        firstContentPane.setAttribute('aria-hidden', 'false');
                     }
-                });
-                
-                // Reorder dt elements to the top of their dlAlternative parent
-                // This was part of original logic, might be important for layout/styling
-                dts.slice().reverse().forEach(dtElement => { 
-                    dlAlternative.insertBefore(dtElement, dlAlternative.firstChild);
-                });
-                
-                const firstDt = dlAlternative.querySelector('dt');
-                if (firstDt) {
-                    firstDt.click(); // Initialize first dt as selected
+                    // Do not call firstButton.click() here to avoid double-triggering change_callback on init
                 }
             });
         }
@@ -238,7 +286,7 @@
     ff.updateWidthFromSpacing = function(spacingInputId, widthInputId, numStringsId) {
         const spacingInput = document.getElementById(spacingInputId);
         const widthInput = document.getElementById(widthInputId);
-        const numStrings = ff.getInt(numStringsId);
+        const numStrings = ff.getInt(numStringsId); 
 
         if (!spacingInput || !widthInput || isNaN(numStrings) || numStrings < 2) {
             if (numStrings < 2 && widthInput) widthInput.value = (0).toFixed(ff.getPrecision());
@@ -247,7 +295,7 @@
 
         const spacingValue = parseFloat(spacingInput.value);
         if (isNaN(spacingValue) || spacingValue <= 0) {
-            return;
+            return; 
         }
 
         const newWidth = (numStrings - 1) * spacingValue;
@@ -259,10 +307,10 @@
     ff.updateSpacingFromWidth = function(widthInputId, spacingInputId, numStringsId) {
         const widthInput = document.getElementById(widthInputId);
         const spacingInput = document.getElementById(spacingInputId);
-        const numStrings = ff.getInt(numStringsId);
+        const numStrings = ff.getInt(numStringsId); 
 
-        if (!widthInput || !spacingInput || isNaN(numStrings)) { // Allow numStrings = 0 or 1 for width input
-            if (numStrings < 2 && spacingInput) spacingInput.value = (0).toFixed(ff.getPrecision());
+        if (!widthInput || !spacingInput || isNaN(numStrings)) {
+            if (spacingInput) spacingInput.value = (0).toFixed(ff.getPrecision());
             return;
         }
         
@@ -271,7 +319,7 @@
             return;
         }
         
-        if (numStrings < 2) { // If 0 or 1 string, spacing is 0 or not applicable.
+        if (numStrings < 2) { 
             spacingInput.value = (0).toFixed(ff.getPrecision());
             return;
         }
@@ -282,5 +330,4 @@
         }
     };
 
-
-}(window.ff || {}));
+}(window.ff || (window.ff = {})));

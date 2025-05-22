@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" class="dark">
 <head>
 <!-- 
 
@@ -23,7 +23,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="keywords" lang="en" content="FretFind, stringed instrument, luthier, fret, guitar, fret placement calculator" />
 <meta name="description" lang="en" content="FretFind2d models fretboards as a system of line segments on a two dimensional plane to design freboards with multiple scale lenghts and microtonal scales." />
-<link rel="stylesheet" type="text/css" href="fretfind.css" />
+<link rel="stylesheet" type="text/css" href="styles.css" />
 <script type="text/javascript" src="libs/svg.min.js"><!-- --></script> <!-- Replaced Raphael.js with SVG.js -->
 <script type="text/javascript" src="libs/FileSaver.min.js"><!-- --></script>
 <script type="text/javascript" src="libs/base64.js"><!-- --></script>
@@ -40,9 +40,10 @@
 <script type="text/javascript" src="ui/domHelpers.js"><!-- --></script>
 <script type="text/javascript" src="ui/main.js"><!-- --></script>
 </head>
-<body>
+<body class="font-sans bg-background text-foreground">
+<main class="container mx-auto p-4">
 <h1>FretFind2D</h1>
-<p>
+<p class="mb-4">
 FretFind2D is a two dimensional fretboard design tool.
 FretFind2D doesn't just calculate fret spacing. 
 It models the entire fretboard, strings and frets, 
@@ -51,96 +52,149 @@ Because of this approach, it can design fretboards for instruments with
 multiple scale lengths and non-parallel frets 
 as well as fretboards for instruments that play just or meantone scales.
 </p>
-<div id="fretfind">
-    <dl id="worksheet">
-        <dd>units</dd>
-        <dd>
-            <label><input type="radio" name="units" value="in" checked="checked"/>inches</label><br />
-            <label><input type="radio" name="units" value="cm" />centimeters</label><br />
-            <label><input type="radio" name="units" value="mm" />millimeters</label>
-        </dd>
-        <dd>display</dd>
-        <dd>
-            <label><input type="checkbox" name="showFretboardEdges" id="showFretboardEdges" checked="checked" />show fretboard edges</label><br />
-            <label><input type="checkbox" name="showStrings" id="showStrings" checked="checked" />show strings</label><br />
-            <label><input type="checkbox" name="extendFrets" id="extendFrets" />extend frets to edge</label><br />
-            <label><input type="checkbox" name="showBoundingBox" id="showBoundingBox" />bounding box</label><br />
-            <label><input type="checkbox" name="showMetas" id="showMetas" checked="checked" />show metas</label>
-        </dd>
-        <dd class="help">
+<div id="fretfind" class="flex flex-col lg:flex-row gap-4">
+    <section id="worksheet" class="lg:w-1/3 p-4 bg-card rounded shadow">
+        <div>
+            <h2 class="text-lg font-semibold mb-2">Units</h2>
+            <div role="radiogroup" aria-labelledby="units-label" class="space-y-1">
+                <label for="units-in" class="flex items-center space-x-2 cursor-pointer">
+                    <input type="radio" id="units-in" name="units" value="in" class="sr-only" checked="checked"/>
+                    <button type="button" role="radio" aria-checked="true" data-value="in"
+                            class="peer h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                        <span data-state="checked" class="flex items-center justify-center h-full w-full rounded-full bg-primary"></span>
+                    </button>
+                    <span>inches</span>
+                </label>
+                <label for="units-cm" class="flex items-center space-x-2 cursor-pointer">
+                    <input type="radio" id="units-cm" name="units" value="cm" class="sr-only" />
+                    <button type="button" role="radio" aria-checked="false" data-value="cm"
+                            class="peer h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                        <span data-state="unchecked" class="flex items-center justify-center h-full w-full rounded-full"></span>
+                    </button>
+                    <span>centimeters</span>
+                </label>
+                <label for="units-mm" class="flex items-center space-x-2 cursor-pointer">
+                    <input type="radio" id="units-mm" name="units" value="mm" class="sr-only" />
+                    <button type="button" role="radio" aria-checked="false" data-value="mm"
+                            class="peer h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                        <span data-state="unchecked" class="flex items-center justify-center h-full w-full rounded-full"></span>
+                    </button>
+                    <span>millimeters</span>
+                </label>
+            </div>
+        </div>
+        <div class="mt-4">
+            <h2 class="text-lg font-semibold mb-2">Display Options</h2>
+            <div class="space-y-1">
+                <label for="showFretboardEdges" class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" name="showFretboardEdges" id="showFretboardEdges" checked="checked"
+                           class="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" />
+                    <span>show fretboard edges</span>
+                </label>
+                <label for="showStrings" class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" name="showStrings" id="showStrings" checked="checked"
+                           class="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" />
+                    <span>show strings</span>
+                </label>
+                <label for="extendFrets" class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" name="extendFrets" id="extendFrets"
+                           class="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" />
+                    <span>extend frets to edge</span>
+                </label>
+                <label for="showBoundingBox" class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" name="showBoundingBox" id="showBoundingBox"
+                           class="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" />
+                    <span>bounding box</span>
+                </label>
+                <label for="showMetas" class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" name="showMetas" id="showMetas" checked="checked"
+                           class="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground" />
+                    <span>show metas</span>
+                </label>
+            </div>
+        </div>
+        <div class="mt-2 p-2 bg-muted text-muted-foreground rounded text-sm">
             Selecting or deselecting any of these options will only affect the display and output files.
             No fret calculations will be affected.
-        </dd>
-        <dt>scale length</dt>
-        <dd>
-            <dl id="length" class="alternative">
-                <dt id="single">single</dt>
-                <dd>
-                    <dl>
-                        <dt>fundamental scale length</dt>
-                        <dd><input type="text" id="len" value="25" /></dd>
-                        <dd class="help">
-                            The scale length is the playing/speaking length of the 
-                            string measured from the nut to the bridge. 
-                            It is perhaps more properly twice the distance from the nut to the octave fret.
-                            The fundamental scale length is the length of a line drawn from 
-                            the middle of the nut to the middle of the bridge. 
-                            For single scale length instruments that line is the perpendicular 
-                            bisector of both the nut and the bridge.
-                            I call this length "fundamental" because on a standard instrument 
-                            with a narrow nut and a wide bridge the outer strings
-                            actually have a slightly longer scale length.
-                        </dd>
-                    </dl>
-                </dd>
-                <dt id="multiple">multiple</dt>
-                <dd>
-                    <dl>
-                        <dt>first string scale length</dt>
-                        <dd><input type="text" id="lenF" value="25" /></dd>
-                        <dd class="help">
-                            The scale length is the playing/speaking length of the 
-                            string measured from the nut to the bridge. 
-                            It is perhaps more properly twice the distance from the nut to the octave fret. 
-                            Enter the actual scale length of the first (traditional high E) string. 
-                        </dd>
-                        <dt>last string scale length</dt>
-                        <dd><input type="text" id="lenL" value="28" /></dd>
-                        <dd class="help">
-                            The scale length is the playing/speaking length of the 
-                            string measured from the nut to the bridge. 
-                            It is perhaps more properly twice the distance from the nut to the octave fret. 
-                            Enter the actual scale length of the last (traditional low E) string. 
-                        </dd>
-                        <dt>perpendicular fret distance</dt>
-                        <dd><input type="text" id="pDist" value="0.5" /></dd>
-                        <dd class="help">
-                            <p>
-                            The perpendicular fret distance
-                            is the ratio of distances along the first and last 
-                            string that fall on a line perpendicular to the midline of the neck. 
-                            This is used to control the angle of the nut, frets and bridge. 
-                            </p>
-                            <p>
-                            Traditionally this property of non-parallel-ly fretted 
-                            fretboards is measured by assigning a "perpendicular fret".
-                            "Perpendicular distance" avoids two problems with the "perpendicular fret" method. 
-                            First, it is possible that no fret falls into this perpendicular position. 
-                            With "perpendicular distance" we avoid fractional frets.
-                            Second, it is possible and even likely with non-equal temperament fretboards that 
-                            as a fret crosses the fretboard it will fall at different ratios along the strings. 
-                            With "perpendicular distance" we avoid complex calculations 
-                            and have more predictable results.
-                            </p>
-                            <p>
-                            A value of 0 results in a perpendicular nut. 
-                            A value of 1 results in a perpendicular bridge.
-                            The default 0.5 results in a perpendicular octave fret.
-                            To calculate an appropriate value for any fret,
-                            simply divide the distance of the fret from the nut by the total length of the string.
-                            In twelve tone equal temperament the values look like this:
-                            </p>
-                            <pre>
+        </div>
+        <div class="mt-4 mb-6">
+            <h2 class="text-lg font-semibold mb-2">Scale Length</h2>
+            <div>
+                <div id="length" class="alternative">
+                    <div class="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
+                        <div id="single" class="tab-button inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm cursor-pointer">Single</div>
+                        <div id="multiple" class="tab-button inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm cursor-pointer">Multiple</div>
+                        <div id="individual" class="tab-button inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm cursor-pointer">Individual</div>
+                    </div>
+                    <div class="tab-content mt-2 p-2 border rounded-md bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                        <div class="mb-4">
+                            <label for="len" class="block text-sm font-medium text-foreground mb-1">Fundamental Scale Length</label>
+                            <input type="text" id="len" value="25" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                            <div class="help text-xs text-muted-foreground p-1 mt-1 border rounded-md bg-muted">
+                                The scale length is the playing/speaking length of the 
+                                string measured from the nut to the bridge. 
+                                It is perhaps more properly twice the distance from the nut to the octave fret.
+                                The fundamental scale length is the length of a line drawn from 
+                                the middle of the nut to the middle of the bridge. 
+                                For single scale length instruments that line is the perpendicular 
+                                bisector of both the nut and the bridge.
+                                I call this length "fundamental" because on a standard instrument 
+                                with a narrow nut and a wide bridge the outer strings
+                                actually have a slightly longer scale length.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-content mt-2 p-2 border rounded-md bg-background hidden ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                        <div class="mb-4">
+                            <label for="lenF" class="block text-sm font-medium text-foreground mb-1">First String Scale Length</label>
+                            <input type="text" id="lenF" value="25" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                            <div class="help text-xs text-muted-foreground p-1 mt-1 border rounded-md bg-muted">
+                                The scale length is the playing/speaking length of the 
+                                string measured from the nut to the bridge. 
+                                It is perhaps more properly twice the distance from the nut to the octave fret. 
+                                Enter the actual scale length of the first (traditional high E) string. 
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="lenL" class="block text-sm font-medium text-foreground mb-1">Last String Scale Length</label>
+                            <input type="text" id="lenL" value="28" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                            <div class="help text-xs text-muted-foreground p-1 mt-1 border rounded-md bg-muted">
+                                The scale length is the playing/speaking length of the 
+                                string measured from the nut to the bridge. 
+                                It is perhaps more properly twice the distance from the nut to the octave fret. 
+                                Enter the actual scale length of the last (traditional low E) string. 
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="pDist" class="block text-sm font-medium text-foreground mb-1">Perpendicular Fret Distance</label>
+                            <input type="text" id="pDist" value="0.5" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                            <div class="help text-xs text-muted-foreground p-1 mt-1 border rounded-md bg-muted">
+                                <p>
+                                The perpendicular fret distance
+                                is the ratio of distances along the first and last 
+                                string that fall on a line perpendicular to the midline of the neck. 
+                                This is used to control the angle of the nut, frets and bridge. 
+                                </p>
+                                <p>
+                                Traditionally this property of non-parallel-ly fretted 
+                                fretboards is measured by assigning a "perpendicular fret".
+                                "Perpendicular distance" avoids two problems with the "perpendicular fret" method. 
+                                First, it is possible that no fret falls into this perpendicular position. 
+                                With "perpendicular distance" we avoid fractional frets.
+                                Second, it is possible and even likely with non-equal temperament fretboards that 
+                                as a fret crosses the fretboard it will fall at different ratios along the strings. 
+                                With "perpendicular distance" we avoid complex calculations 
+                                and have more predictable results.
+                                </p>
+                                <p>
+                                A value of 0 results in a perpendicular nut. 
+                                A value of 1 results in a perpendicular bridge.
+                                The default 0.5 results in a perpendicular octave fret.
+                                To calculate an appropriate value for any fret,
+                                simply divide the distance of the fret from the nut by the total length of the string.
+                                In twelve tone equal temperament the values look like this:
+                                </p>
+                                <pre class="text-xs bg-inherit p-1 rounded overflow-x-auto">
 Fret  P.D.    Fret  P.D.
 1  0.05613    13  0.52806
 2  0.10910    14  0.55455
@@ -154,52 +208,53 @@ Fret  P.D.    Fret  P.D.
 10  0.43877    22  0.71938
 11  0.47027    23  0.73513
 12  0.50000    24  0.75000
-                            </pre>
-                        </dd>
-                    </dl>
-                </dd>
-                <dt id="individual">individual</dt>
-                <dd>
-                    <div class="experimental">Danger: Experimental!!!</div>
-                    <dl>
-                        <dt>string scale lengths</dt>
-                        <dd id="ilengths">
-                        </dd>
-                        <dd class="help">
-                            The scale length is the playing/speaking length of the
-                            string measured from the nut to the bridge.
-                            It is perhaps more properly twice the distance from the nut to the octave fret.
-                            Enter the actual scale length of the each string.
-                        </dd>
-                        <dt>perpendicular fret distance</dt>
-                        <dd><input type="text" id="ipDist" value="0.5" /></dd>
-                        <dd class="help">
-                            <p>
-                            The perpendicular fret distance
-                            is the ratio of distances along the first and last
-                            string that fall on a line perpendicular to the midline of the neck.
-                            This is used to control the angle of the nut, frets and bridge.
-                            </p>
-                            <p>
-                            Traditionally this property of non-parallel-ly fretted
-                            fretboards is measured by assigning a "perpendicular fret".
-                            "Perpendicular distance" avoids two problems with the "perpendicular fret" method.
-                            First, it is possible that no fret falls into this perpendicular position.
-                            With "perpendicular distance" we avoid fractional frets.
-                            Second, it is possible and even likely with non-equal temperament fretboards that
-                            as a fret crosses the fretboard it will fall at different ratios along the strings.
-                            With "perpendicular distance" we avoid complex calculations
-                            and have more predictable results.
-                            </p>
-                            <p>
-                            A value of 0 results in a perpendicular nut.
-                            A value of 1 results in a perpendicular bridge.
-                            The default 0.5 results in a perpendicular octave fret.
-                            To calculate an appropriate value for any fret,
-                            simply divide the distance of the fret from the nut by the total length of the string.
-                            In twelve tone equal temperament the values look like this:
-                            </p>
-                            <pre>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-content mt-2 p-2 border rounded-md bg-background hidden ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                        <div class="mb-1 p-1 text-sm text-destructive bg-destructive-foreground/20 border border-destructive rounded">Danger: Experimental!!!</div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-foreground mb-1">String Scale Lengths</label>
+                            <div id="ilengths" class="text-sm p-1 border rounded bg-muted min-h-[2em]">
+                            </div>
+                            <div class="help text-xs text-muted-foreground p-1 mt-1 border rounded-md bg-muted">
+                                The scale length is the playing/speaking length of the
+                                string measured from the nut to the bridge.
+                                It is perhaps more properly twice the distance from the nut to the octave fret.
+                                Enter the actual scale length of the each string.
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="ipDist" class="block text-sm font-medium text-foreground mb-1">Perpendicular Fret Distance</label>
+                            <input type="text" id="ipDist" value="0.5" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                            <div class="help text-xs text-muted-foreground p-1 mt-1 border rounded-md bg-muted">
+                                <p>
+                                The perpendicular fret distance
+                                is the ratio of distances along the first and last
+                                string that fall on a line perpendicular to the midline of the neck.
+                                This is used to control the angle of the nut, frets and bridge.
+                                </p>
+                                <p>
+                                Traditionally this property of non-parallel-ly fretted
+                                fretboards is measured by assigning a "perpendicular fret".
+                                "Perpendicular distance" avoids two problems with the "perpendicular fret" method.
+                                First, it is possible that no fret falls into this perpendicular position.
+                                With "perpendicular distance" we avoid fractional frets.
+                                Second, it is possible and even likely with non-equal temperament fretboards that
+                                as a fret crosses the fretboard it will fall at different ratios along the strings.
+                                With "perpendicular distance" we avoid complex calculations
+                                and have more predictable results.
+                                </p>
+                                <p>
+                                A value of 0 results in a perpendicular nut.
+                                A value of 1 results in a perpendicular bridge.
+                                The default 0.5 results in a perpendicular octave fret.
+                                To calculate an appropriate value for any fret,
+                                simply divide the distance of the fret from the nut by the total length of the string.
+                                In twelve tone equal temperament the values look like this:
+                                </p>
+                                <pre class="text-xs bg-inherit p-1 rounded overflow-x-auto">
 Fret  P.D.    Fret  P.D.
 1  0.05613    13  0.52806
 2  0.10910    14  0.55455
@@ -213,154 +268,188 @@ Fret  P.D.    Fret  P.D.
 10  0.43877    22  0.71938
 11  0.47027    23  0.73513
 12  0.50000    24  0.75000
-                            </pre>
-                        </dd>
-                    </dl>
-                </dd>
-            </dl>
-        </dd>
-        <dt>string width at the nut</dt>
-        <dd><input type="text" id="nutWidth" value="1.375" /></dd>
-        <dd class="help">
-            The string width at the nut is the distance along the nut from the center 
-            of the first string to the center of the last string.
-            I'm using delta x distance 
-            (distance measured along a line drawn perpendicular to the neck's midline)
-            because I think that is what 
-            you would feel as the width if you were playing an instrument with multiple scale lengths. 
-            It also makes the calculation easier.
-        </dd>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mb-4">
+            <label for="nutWidth" class="block text-sm font-medium text-foreground mb-1">String Width at the Nut</label>
+            <input type="text" id="nutWidth" value="1.375" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+            <div class="help text-xs text-muted-foreground p-1 mt-1 border rounded-md bg-muted">
+                The string width at the nut is the distance along the nut from the center 
+                of the first string to the center of the last string.
+                I'm using delta x distance 
+                (distance measured along a line drawn perpendicular to the neck's midline)
+                because I think that is what 
+                you would feel as the width if you were playing an instrument with multiple scale lengths. 
+                It also makes the calculation easier.
+            </div>
+        </div>
 
-        <dt>string spacing at the nut (center-to-center)</dt>
-        <dd><input type="text" id="nutStringSpacing" value="" /></dd>
-        <dd class="help">
-            This setting defines the distance from the center of one string to the center of the adjacent string at the nut.
-            It is used to calculate the 'string width at the nut', and vice-versa.
-            If you change the number of strings, this spacing value will be used to recalculate a sensible nut width.
-        </dd>
+        <div class="mb-4">
+            <label for="nutStringSpacing" class="block text-sm font-medium text-foreground mb-1">String Spacing at the Nut (center-to-center)</label>
+            <input type="text" id="nutStringSpacing" value="" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+            <div class="help text-xs text-muted-foreground p-1 mt-1 border rounded-md bg-muted">
+                This setting defines the distance from the center of one string to the center of the adjacent string at the nut.
+                It is used to calculate the 'string width at the nut', and vice-versa.
+                If you change the number of strings, this spacing value will be used to recalculate a sensible nut width.
+            </div>
+        </div>
 
-        <dt>string width at the bridge</dt>
-        <dd><input type="text" id="bridgeWidth" value="2.125" /></dd>
-        <dd class="help">
-            The string width at the bridge is the distance along the bridge from the center 
-            of the first string to the center of the last string.            
-            I'm using delta x distance 
-            (distance measured along a line drawn perpendicular to the neck's midline)
-            because I think that is what 
-            you would feel as the width if you were playing an instrument with multiple scale lengths. 
-            It also makes the calculation easier.
-        </dd>
+        <div class="mb-4">
+            <label for="bridgeWidth" class="block text-sm font-medium text-foreground mb-1">String Width at the Bridge</label>
+            <input type="text" id="bridgeWidth" value="2.125" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+            <div class="help text-xs text-muted-foreground p-1 mt-1 border rounded-md bg-muted">
+                The string width at the bridge is the distance along the bridge from the center 
+                of the first string to the center of the last string.            
+                I'm using delta x distance 
+                (distance measured along a line drawn perpendicular to the neck's midline)
+                because I think that is what 
+                you would feel as the width if you were playing an instrument with multiple scale lengths. 
+                It also makes the calculation easier.
+            </div>
+        </div>
 
-        <dt>string spacing at the bridge (center-to-center)</dt>
-        <dd><input type="text" id="bridgeStringSpacing" value="" /></dd>
-        <dd class="help">
-            This setting defines the distance from the center of one string to the center of the adjacent string at the bridge.
-            It is used to calculate the 'string width at the bridge', and vice-versa.
-            If you change the number of strings, this spacing value will be used to recalculate a sensible bridge width.
-        </dd>
+        <div class="mb-4">
+            <label for="bridgeStringSpacing" class="block text-sm font-medium text-foreground mb-1">String Spacing at the Bridge (center-to-center)</label>
+            <input type="text" id="bridgeStringSpacing" value="" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+            <div class="help text-xs text-muted-foreground p-1 mt-1 border rounded-md bg-muted">
+                This setting defines the distance from the center of one string to the center of the adjacent string at the bridge.
+                It is used to calculate the 'string width at the bridge', and vice-versa.
+                If you change the number of strings, this spacing value will be used to recalculate a sensible bridge width.
+            </div>
+        </div>
         
-        <dt>string spacing</dt>
-        <dd>
-            <dl id="spacing" class="alternative">
-                <dt id="equal">equal</dt>
-                <dd></dd>
-                <dt id="proportional">proportional</dt>
-                <dd>
-                    <dl>
-                        <dt>string gauges</dt>
-                        <dd id="igauges">
-                        </dd>
-                    </dl>
-                </dd>
-            </dl>
-        </dd>                
-        <dd class="help">
-            <dl>
-              <dt>Equal:</dt>
-              <dd>Space out the strings evenly from center to center without regard for the thickness of the strings.</dd>
-              <dt>Proportional:</dt>
-              <dd>The spacing accounts for the diameter of the strings so that the empty space between each pair of strings is the same.</dd>
-            </dl>
-            <p>
-              Note that the outer two strings are still assumed to be centered on their coordinates, 
-              i.e. if you enter a nut width of 2" then the outer edges of your outer two strings will 
-              be wider than that by half of the sum of their gauges.
-            </p>
-            <p>
-               Enter the thickness of each string, with String 1 being the thinnest/highest. 
-               For example, a standard set of electric guitar strings, in inches, would be 0.010, 0.013, 0.017, 0.026, 0.036, 0.046. 
-               If you are using metric, please convert your string gauges to metric as well.
-            </p>
-        </dd>
+        <div class="mt-4 mb-6">
+            <h3 class="text-lg font-semibold mb-2">String Spacing</h3>
+            <div>
+                <div id="spacing" class="alternative">
+                    <div class="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
+                        <div id="equal" class="tab-button inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm cursor-pointer">Equal</div>
+                        <div id="proportional" class="tab-button inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm cursor-pointer">Proportional</div>
+                    </div>
+                    <div class="tab-content mt-2 p-2 border rounded-md bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                        {/* Content for Equal spacing - likely nothing or a placeholder message if needed */}
+                        <p class="text-sm text-muted-foreground">Strings will be spaced evenly from center to center.</p>
+                    </div>
+                    <div class="tab-content mt-2 p-2 border rounded-md bg-background hidden ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                        <div>
+                            <label class="block text-sm font-medium text-foreground mb-1">String Gauges</label>
+                            <div id="igauges" class="text-sm p-1 border rounded bg-muted min-h-[2em]">
+                                {/* String gauge inputs will be dynamically added here by JS */}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>                
+            <div class="help text-xs text-muted-foreground p-2 border rounded bg-muted mt-2">
+                <div class="mb-1"><strong class="text-foreground">Equal:</strong> Space out the strings evenly from center to center without regard for the thickness of the strings.</div>
+                <div class="mb-1"><strong class="text-foreground">Proportional:</strong> The spacing accounts for the diameter of the strings so that the empty space between each pair of strings is the same.</div>
+                <p class="mt-1">
+                  Note that the outer two strings are still assumed to be centered on their coordinates, 
+                  i.e. if you enter a nut width of 2" then the outer edges of your outer two strings will 
+                  be wider than that by half of the sum of their gauges.
+                </p>
+                <p class="mt-1">
+                   Enter the thickness of each string, with String 1 being the thinnest/highest. 
+                   For example, a standard set of electric guitar strings, in inches, would be 0.010, 0.013, 0.017, 0.026, 0.036, 0.046. 
+                   If you are using metric, please convert your string gauges to metric as well.
+                </p>
+            </div>
+        </div>
         
-        <dt>fretboard overhang</dt>
-        <dd>
-            <dl id="overhang" class="alternative">
-                <dt id="equal">equal</dt>
-                <dd><input type="text" id="oE" value="0.09375" /></dd>
-                <dt id="nutbridge">nut &amp; bridge</dt>
-                <dd>
-                    <table>
-                    <tr><td>nut</td><td>
-                    <input type="text" id="oN" value="0.09375" />
-                    </td></tr>
-                    <tr><td>bridge</td><td>
-                    <input type="text" id="oB" value="0.09375" />
-                    </td></tr>
-                    </table>
-                </dd>
-                <dt id="firstlast">first &amp; last</dt>
-                <dd>
-                    <table>
-                    <tr><td>last</td><td>first</td></tr>
-                    <tr><td>
-                    <input type="text" id="oL" value="0.09375" />
-                    </td><td>
-                    <input type="text" id="oF" value="0.09375" />
-                    </td></tr>
-                    </table>
-                </dd>
-                <dt id="all">all</dt>
-                <dd>
-                    <table>
-                    <tr><td> </td><td>last</td><td>first</td></tr>
-                    <tr><td>nut</td><td>
-                    <input type="text" id="oNL" value="0.09375" />
-                    </td><td>
-                    <input type="text" id="oNF" value="0.09375" />
-                    </td></tr>
-                    <tr><td>bridge</td><td>
-                    <input type="text" id="oBL" value="0.09375" />
-                    </td><td>
-                    <input type="text" id="oBF" value="0.09375" />
-                    </td></tr>
-                    </table>
-                </dd>
-            </dl>
-        </dd>
-        <dd class="help">
-            The fretboard overhang is the distance from the center of outer strings to edge of nut or bridge. 
-            For fretboards with multiple scale lengths this is calculated as delta x distance, 
-            distance measured along a line drawn perpendicular to the neck's midline.
-            There are four input modes for overhang. 
-            <dl>
-            <dt>Equal:</dt><dd>you enter a single value and the overhang will be constant.</dd>
-            <dt>Nut &amp; Bridge:</dt><dd>allows you to specify one overhang at the nut and another overhang at the bridge.</dd>
-            <dt>First &amp; Last:</dt><dd>allows you to specify one overhang for the first string and another for the last string.</dd>
-            <dt>All:</dt><dd>you specify an overhang for all four locations separately.</dd>
-            </dl>
-            (Please note, in FretFind the first string is shown on the far right 
-            where the high E string would be on a typical right-handed guitar. 
-            The last string is on the far left, where the low E would be found.)
-        </dd>
-        <dt>calculation method</dt>
-        <dd>
-            <dl id="scale" class="alternative">
-                <dt id="et">equal (root 2)</dt>
-                <dd><input type="text" id="root" value="12" /></dd>
-                <dt id="scala">just (scala)</dt>
-                <dd>
-<textarea rows="17" id="scl">
+        <div class="mt-4 mb-6">
+            <h3 class="text-lg font-semibold mb-2">Fretboard Overhang</h3>
+            <div>
+                <div id="overhang" class="alternative">
+                    <div class="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground flex-wrap">
+                        <div id="equal" class="tab-button inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm cursor-pointer">Equal</div>
+                        <div id="nutbridge" class="tab-button inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm cursor-pointer">Nut &amp; Bridge</div>
+                        <div id="firstlast" class="tab-button inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm cursor-pointer">First &amp; Last</div>
+                        <div id="all" class="tab-button inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm cursor-pointer">All</div>
+                    </div>
+                    <div class="tab-content mt-2 p-2 border rounded-md bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"> {/* Equal */}
+                        <input type="text" id="oE" value="0.09375" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                    </div>
+                    <div class="tab-content mt-2 p-2 border rounded-md bg-background hidden ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"> {/* Nut & Bridge */}
+                        <table class="w-full text-sm">
+                            <tbody>
+                                <tr>
+                                    <td class="pr-2 py-1">Nut:</td>
+                                    <td><input type="text" id="oN" value="0.09375" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="pr-2 py-1">Bridge:</td>
+                                    <td><input type="text" id="oB" value="0.09375" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-content mt-2 p-2 border rounded-md bg-background hidden ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"> {/* First & Last */}
+                        <table class="w-full text-sm">
+                            <thead><tr><th class="text-left font-medium pr-2 py-1"></th><th class="text-left font-medium pr-2 py-1">Last</th><th class="text-left font-medium pr-2 py-1">First</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td class="pr-2 py-1">Overhang:</td>
+                                    <td><input type="text" id="oL" value="0.09375" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" /></td>
+                                    <td><input type="text" id="oF" value="0.09375" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-content mt-2 p-2 border rounded-md bg-background hidden ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"> {/* All */}
+                        <table class="w-full text-sm">
+                            <thead><tr><th class="text-left font-medium pr-2 py-1"></th><th class="text-left font-medium pr-2 py-1">Last</th><th class="text-left font-medium pr-2 py-1">First</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td class="pr-2 py-1">Nut:</td>
+                                    <td><input type="text" id="oNL" value="0.09375" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" /></td>
+                                    <td><input type="text" id="oNF" value="0.09375" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="pr-2 py-1">Bridge:</td>
+                                    <td><input type="text" id="oBL" value="0.09375" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" /></td>
+                                    <td><input type="text" id="oBF" value="0.09375" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="help text-xs text-muted-foreground p-2 border rounded bg-muted mt-2">
+                The fretboard overhang is the distance from the center of outer strings to edge of nut or bridge. 
+                For fretboards with multiple scale lengths this is calculated as delta x distance, 
+                distance measured along a line drawn perpendicular to the neck's midline.
+                There are four input modes for overhang: 
+                <ul class="list-disc pl-4 mt-1">
+                    <li><strong class="text-foreground">Equal:</strong> you enter a single value and the overhang will be constant.</li>
+                    <li><strong class="text-foreground">Nut &amp; Bridge:</strong> allows you to specify one overhang at the nut and another overhang at the bridge.</li>
+                    <li><strong class="text-foreground">First &amp; Last:</strong> allows you to specify one overhang for the first string and another for the last string.</li>
+                    <li><strong class="text-foreground">All:</strong> you specify an overhang for all four locations separately.</li>
+                </ul>
+                (Please note, in FretFind the first string is shown on the far right 
+                where the high E string would be on a typical right-handed guitar. 
+                The last string is on the far left, where the low E would be found.)
+            </div>
+        </div>
+        <div class="mt-4 mb-6">
+            <h3 class="text-lg font-semibold mb-2">Calculation Method</h3>
+            <div>
+                <div id="scale" class="alternative">
+                    <div class="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground flex-wrap">
+                        <div id="et" class="tab-button inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm cursor-pointer">Equal (Root 2)</div>
+                        <div id="scala" class="tab-button inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm cursor-pointer">Just (Scala)</div>
+                    </div>
+                    <div class="tab-content mt-2 p-2 border rounded-md bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"> {/* Equal (Root 2) */}
+                        <label for="root" class="block text-sm font-medium text-foreground mb-1">Tones per Octave:</label>
+                        <input type="text" id="root" value="12" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                    </div>
+                    <div class="tab-content mt-2 p-2 border rounded-md bg-background hidden ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"> {/* Just (Scala) */}
+                        <label for="scl" class="block text-sm font-medium text-foreground mb-1">Scala SCL File Content:</label>
+                        <textarea id="scl" rows="10" class="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 font-mono">
 ! 12tet.scl
 !
 12 tone equal temperament
@@ -378,56 +467,62 @@ Fret  P.D.    Fret  P.D.
 1000.
 1100.
 2/1
-</textarea>            
-                </dd>
-            </dl>
-        </dd>
-        <dd class="help">
-            The calculation method determines how FretFind calculates fret placement.
-            There are two input modes. 
-            <dl>
-            <dt>Equal:</dt><dd>uses the X<sup>th</sup> root of two, a standard
-            method for calculating equal temperaments. You enter the number of tones per octave.</dd>
-            <dt>Scala:</dt><dd>uses a Scala SCL file which allows you to specify 
-            each scale step exactly in either ratios or cents. 
-            If you are interested in creating your own scale, please read this description of the 
-            <a href="http://www.huygens-fokker.org/scala/scl_format.html">Scala scale file format</a>.
-            Otherwise try a scale from the Scala scale archive, found at the very bottom of the 
-            <a href="http://www.huygens-fokker.org/scala/downloads.html">Scala download page</a>.
-            You can learn more about Scala at the 
-            <a href="http://www.huygens-fokker.org/scala/">Scala home page</a>.</dd>
-            </dl>
-        </dd>
-        <dt>number of frets</dt>
-        <dd><input type="text" id="numFrets" value="24" /></dd>
-        <dd class="help">
-            This is the number of frets you would like FretFind to calculate.
-            The number of frets must be an integer. 
-        </dd>
-        <dt>number of strings</dt>
-        <dd><input type="text" id="numStrings" value="6" /></dd>
-        <dd class="help">
-            The number of strings must be an integer. 
-            If you change the number of strings be sure to update the tuning section below (only useful with non-equal temperament scales).
-        </dd>
-        <dt>tuning</dt>
-        <dd id="tuning">
-        </dd>
-        <dd class="help">
-            Enter the scale step (of the scale defined above) to which each string will be tuned.
-            For example a standard guitar in the key of E would be tuned 0, 7, 3, 10, 5, 0.
-            The first string is the string to the far right on the fretboard.
-            This step is not important for the Equal calculation method.
-            Entering a tuning for the Scala calculation method will very likely result in partial frets.
-        </dd>
-    </dl><!-- worksheet -->
-    <div id="diagram"><!-- --></div>
-    <dl id="downloads">
-        <dt>Link</dt><dd><a href="#" id="bookmark">Link to this design</a></dd>
-    </dl>
-    <div id="tables"><!-- --></div>
+</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="help text-xs text-muted-foreground p-2 border rounded bg-muted mt-2">
+                The calculation method determines how FretFind calculates fret placement.
+                There are two input modes:
+                <ul class="list-disc pl-4 mt-1">
+                    <li><strong class="text-foreground">Equal:</strong> uses the X<sup>th</sup> root of two, a standard method for calculating equal temperaments. You enter the number of tones per octave.</li>
+                    <li><strong class="text-foreground">Scala:</strong> uses a Scala SCL file which allows you to specify each scale step exactly in either ratios or cents. If you are interested in creating your own scale, please read this description of the <a href="http://www.huygens-fokker.org/scala/scl_format.html" class="text-primary hover:underline">Scala scale file format</a>. Otherwise try a scale from the Scala scale archive, found at the very bottom of the <a href="http://www.huygens-fokker.org/scala/downloads.html" class="text-primary hover:underline">Scala download page</a>. You can learn more about Scala at the <a href="http://www.huygens-fokker.org/scala/" class="text-primary hover:underline">Scala home page</a>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="numFrets" class="block text-sm font-medium text-foreground mb-1">Number of Frets</label>
+            <input type="text" id="numFrets" value="24" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+            <div class="help text-xs text-muted-foreground p-1 mt-1 border rounded-md bg-muted">
+                This is the number of frets you would like FretFind to calculate.
+                The number of frets must be an integer. 
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="numStrings" class="block text-sm font-medium text-foreground mb-1">Number of Strings</label>
+            <input type="text" id="numStrings" value="6" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+            <div class="help text-xs text-muted-foreground p-1 mt-1 border rounded-md bg-muted">
+                The number of strings must be an integer. 
+                If you change the number of strings be sure to update the tuning section below (only useful with non-equal temperament scales).
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-2">Tuning</h3>
+            <div id="tuning" class="text-sm p-2 border rounded bg-muted min-h-[4em]">
+                {/* Tuning inputs will be dynamically generated here by JS */}
+            </div>
+            <div class="help p-2 bg-muted text-muted-foreground rounded text-xs mt-1 border">
+                Enter the scale step (of the scale defined above) to which each string will be tuned.
+                For example a standard guitar in the key of E would be tuned 0, 7, 3, 10, 5, 0.
+                The first string is the string to the far right on the fretboard.
+                This step is not important for the Equal calculation method.
+                Entering a tuning for the Scala calculation method will very likely result in partial frets.
+            </div>
+        </div>
+    </section><!-- worksheet -->
+    <section id="diagram" class="lg:w-2/3 p-4 bg-card border rounded shadow"><!-- Diagram content will go here --></section>
+    <section id="downloads" class="w-full p-4 mt-4 bg-card rounded shadow">
+        <div>
+            <h2 class="text-lg font-semibold">Link</h2>
+            <div><a href="#" id="bookmark">Link to this design</a></div>
+        </div>
+    </section>
+    <section id="tables" class="w-full mt-4 overflow-x-auto"><!-- Tables content will go here --></section>
 </div>
-<p class="dev">The latest version in development is available on <a href="https://acspike.github.io/FretFind2D/src/fretfind.html">GitHub</a>.</p>
-<a href="http://github.com/acspike/FretFind2D"><img class="github-ribbon" src="http://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub" /></a>
+<p class="dev text-sm mt-4">The latest version in development is available on <a href="https://acspike.github.io/FretFind2D/src/fretfind.html" class="text-primary hover:underline">GitHub</a>.</p>
+</main>
 </body>
 </html>

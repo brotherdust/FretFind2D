@@ -1,0 +1,30 @@
+{
+  "name": "fretfind",
+  "version": "1.0.0",
+  "description": "FretFind2D - Fretboard Generator",
+  "main": "src/ff_setup.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fretboard",
+    "generator",
+    "guitar",
+    "bass",
+    "luthier"
+  ],
+  "author": "",
+  "license": "AGPL-3.0-or-later",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.7"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.511.0",
+    "tailwind-merge": "^3.3.0",
+    "tw-animate-css": "^1.3.0"
+  }
+}
